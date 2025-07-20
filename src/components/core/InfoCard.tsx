@@ -137,7 +137,7 @@ const InfoCard = () => {
             <div className="flex-1">
               <div className="flex flex-col items-center gap-4 mb-4 lg:flex-row lg:items-center">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
-                  Kio-TsChat
+                  Kio-Chat
                 </h1>
                 <div className="flex flex-col items-center gap-2 sm:flex-row lg:justify-start">
                   <Badge className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-200 border-blue-500/30 px-3 py-1 text-xs">
@@ -227,6 +227,43 @@ const InfoCard = () => {
             </div>
           </div>
 
+          {/* Tech Stack */}
+          <div className="mt-8 pt-6 border-t border-slate-700/50">
+            <div className="flex flex-col items-center gap-4 text-sm text-slate-400 sm:flex-row sm:flex-wrap">
+              <span className="font-medium text-slate-300">Build with:</span>
+              <div className="flex flex-wrap justify-center gap-2 text-blue-300 rounded border border-blue-500/20 text-xs">
+                <span className="px-2 py-1 bg-blue-500/10 text-blue-300 rounded border border-blue-500/20 text-xs">
+                  {stats?.github.language || 'TypeScript'}
+                </span>
+                <span className="px-2 py-1 bg-purple-500/10 text-purple-300 rounded border border-purple-500/20 text-xs">
+                  Next.js
+                </span>
+                <span className="px-2 py-1 bg-green-500/10 text-green-300 rounded border border-green-500/20 text-xs">
+                  Prisma
+                </span>
+                <span className="px-2 py-1 bg-yellow-500/10 text-yellow-300 rounded border border-yellow-500/20 text-xs">
+                  PostgreSQL
+                </span>
+                <span className="px-2 py-1 bg-red-500/10 text-red-300 rounded border border-red-500/20 text-xs">
+                  Auth.js
+                </span>
+                <span className="px-2 py-1 bg-gray-500/10 text-gray-300 rounded border border-gray-500/20 text-xs">
+                  Tailwind CSS
+                </span>
+                <span className="px-2 py-1 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20 text-xs">
+                  WebSockets
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Last Updated */}
+          { stats?.lastUpdated && (
+            <div className="mt-4 text-xs text-slate-500 text-center">
+              Last updated: {new Date(stats.lastUpdated).toLocaleString()}
+            </div>
+          )}
+          
         </CardContent>
       </Card>
     </div>
