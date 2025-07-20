@@ -3,6 +3,7 @@ import "./globals.css";
 import { NextAuthProvider } from "@/components/NextAuthProvider";
 import { Toaster } from "sonner";
 import Header from "@/components/core/Header";
+import Footer from "@/components/core/Footer";
 
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Toaster richColors position="top-right" />
+          <Footer />
         </NextAuthProvider>
       </body>
     </html>

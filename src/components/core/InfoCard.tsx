@@ -59,7 +59,7 @@ const InfoCard = () => {
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="flex flex-col items-center gap-4 text-center">
                 <div className="text-red-400 text-4xl sm:text-3xl">⚠️</div>
-                <p className="text-slate-400 text-sm sm:text-base">Failed to load bot stats</p>
+                <p className="text-slate-400 text-sm sm:text-base">Failed to load stats</p>
                 <Button 
                   onClick={() => window.location.reload()} 
                   variant="outline" 
@@ -263,7 +263,7 @@ const InfoCard = () => {
               Last updated: {new Date(stats.lastUpdated).toLocaleString()}
             </div>
           )}
-          
+
         </CardContent>
       </Card>
     </div>
