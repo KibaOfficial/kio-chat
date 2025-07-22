@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { Coffee, Github, Globe, Heart, Mail, Sparkles } from "lucide-react";
+import { Coffee, Github, Heart, Mail, Sparkles } from "lucide-react";
 
 const Footer = () => {
   return (
