@@ -4,3 +4,10 @@
 // https://opensource.org/licenses/MIT
 
 export { auth as middleware } from "@/auth";
+
+// protect src/app/(main)/(routes)/app directory
+export const config = {
+  matcher: [
+    "/app/:path*"
+  ]
+}

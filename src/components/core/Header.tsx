@@ -9,6 +9,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { AuthButton } from "../auth/AuthButton";
+
 export function Header() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -115,6 +117,9 @@ export function Header() {
           >
             Terms of Service
           </Link>
+          <div className="ml-6 flex items-center">
+            <AuthButton />
+          </div>
         </nav>
 
         {/* Mobile Hamburger Button */}
@@ -210,6 +215,9 @@ export function Header() {
             >
               Terms of Service
             </Link>
+            <div className="mt-4 flex items-center justify-center">
+              <AuthButton />
+            </div>
           </div>
 
           {/* Mobile Menu Footer */}
