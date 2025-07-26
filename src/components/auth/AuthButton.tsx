@@ -27,7 +27,7 @@ export function AuthButton() {
   return session ? (
     <div className="flex items-center gap-4">
       <Image 
-        src={session.user?.image || "/default-avatar.png"}
+        src={session.user?.image || "https://i.pravatar.cc/150?u=default"}
         alt="User Avatar"
         width={50}
         height={50}

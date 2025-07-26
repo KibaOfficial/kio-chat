@@ -7,16 +7,10 @@
 import InfoCard from "@/components/core/InfoCard";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
-import { toast } from "sonner";
+import { useToastWithSound } from "@/lib/toast/toast-wrapper";
+
 
 const HomeComponent = () => {
-  const searchParams = useSearchParams();
-  useEffect(() => {
-    if (searchParams.get("unauth") === "1") {
-      toast.error("You need to be logged in to access the dashboard");
-    }
-  }, [searchParams]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Animated Background Elements */}
