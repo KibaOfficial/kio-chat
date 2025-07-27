@@ -26,7 +26,7 @@ export const metadata: Metadata = {
       { rel: 'mask-icon', url: '/icons/icon-192x192.png' },
     ],
   },
-  // manifest: '/icons/manifest.json'
+  manifest: '/icons/manifest.json'
 };
 
 export default function RootLayout({
