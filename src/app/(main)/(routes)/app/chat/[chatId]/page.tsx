@@ -63,10 +63,14 @@ const ChatIdPage = async ({
         />
         <ChatMessages
           name={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
+          chatId={chatId}
+          currentUserId={user.id}
         />
         <div className="px-2 pb-2">
           <ChatInput
+            chatId={chatId}
             userName={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
+            senderId={user.id} // Pass the user ID directly
           />
         </div>
       </div>

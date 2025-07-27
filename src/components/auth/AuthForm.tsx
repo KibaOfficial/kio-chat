@@ -29,14 +29,27 @@ const AuthForm = () => {
   const onLoginSubmit = async (data: LoginInput) => {
     setSubmitMessage("Logging in...");
 
-    const result = await signIn("credentials", {
+    // first check if the emailVerified is true
+    const res = await fetch("/api/auth/check-email-verified", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: data.email }),
+    });
+    const result = await res.json();
+    if (!result.emailVerified) {
+      setSubmitMessage("Please verify your email before logging in.");
+      toast.error("Please verify your email before logging in.");
+      return;
+    }
+
+    const loginResult = await signIn("credentials", {
       redirect: false,
       email: data.email,
       password: data.password,
     });
 
-    if (result?.error) {
-      setSubmitMessage("Login failed: " + result.error);
+    if (loginResult?.error) {
+      setSubmitMessage("Login failed: " + loginResult.error);
       toast.error("Invalid email or password.");
     } else {
       setSubmitMessage("Login successful! Redirecting...");

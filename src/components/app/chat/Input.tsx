@@ -9,6 +9,8 @@ import { useToastWithSound } from "@/lib/toast/toast-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { title } from "process";
 import { useEffect, useRef } from "react";
+import { useMemo } from "react";
+import io from "socket.io-client";
 import { useForm } from "react-hook-form";
 import z from "zod";
 
@@ -18,9 +20,16 @@ const formSchema = z.object({
 
 interface ChatInputProps {
   userName: string;
+  chatId: string;
+  senderId: string; // User ID of the sender, required for message sending
 }
 
-export const ChatInput = ({ userName }: ChatInputProps) => {
+export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
+  // Socket.IO-Client initialisieren (Memoized, damit nicht bei jedem Render neu)
+  const socket = useMemo(() => {
+    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "wss://kiochatws.kibaofficial.net";
+    return io(url);
+  }, []);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,8 +56,14 @@ export const ChatInput = ({ userName }: ChatInputProps) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isLoading) return;
 
-    // Simulate sending a message
-    console.log("Sending message:", data.content);
+    console.log("Sending message:", data);
+
+    // Nachricht über Socket senden
+    socket.emit("message", {
+      chatId,
+      senderId: senderId, // <-- MUSS eine User-ID sein!
+      content: data.content,
+    });
     form.resetField("content");
   }
 
