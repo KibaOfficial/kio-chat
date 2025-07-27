@@ -6,7 +6,7 @@
 
 import useSWR from "swr";
 import { Card, CardContent } from "../ui/card";
-import { Activity, Camera, ExternalLink, Github, Loader2, Phone, Shield, Smile, Star, Users, Zap } from "lucide-react";
+import { Activity, AlertTriangle, Camera, ExternalLink, Github, Info, Loader2, Phone, Shield, Smile, Star, Users, Zap } from "lucide-react";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
@@ -120,6 +120,68 @@ const InfoCard = () => {
       <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 via-transparent to-purple-500/10"></div>
       <Card className="relative bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl">
         <CardContent className="p-6 sm:p-8 lg:p-12">
+          {/* Enhanced Dev Info Section */}
+          <div className="mb-10">
+            <div className="relative group/notice">
+              {/* Glowing border effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/40 via-orange-500/40 to-red-500/40 rounded-xl blur-sm group-hover/notice:blur-md transition-all duration-500"></div>
+              
+              <div className="relative bg-gradient-to-r from-yellow-500/25 via-orange-500/20 to-red-500/25 border-2 border-yellow-400/40 rounded-xl px-6 py-5 shadow-2xl backdrop-blur-sm">
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0">
+                    <div className="relative">
+                      <Shield className="h-7 w-7 text-yellow-300 group-hover/notice:text-yellow-200 transition-colors duration-300" />
+                      <div className="absolute inset-0 bg-yellow-400/20 rounded-full blur-md animate-pulse"></div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 space-y-3">
+                    {/* Header */}
+                    <div className="flex items-center gap-3">
+                      <AlertTriangle className="h-5 w-5 text-orange-400 animate-pulse" />
+                      <h3 className="font-bold text-yellow-200 text-base sm:text-lg tracking-wide flex items-center gap-2">
+                        CRITICAL SECURITY NOTICE
+                        <span className="text-xs bg-red-500/20 text-red-300 px-2 py-1 rounded-full border border-red-400/30">
+                          BETA
+                        </span>
+                      </h3>
+                    </div>
+                    
+                    {/* Main Warning */}
+                    <div className="space-y-3 text-sm sm:text-base text-slate-200 leading-relaxed">
+                      <div className="bg-slate-900/40 rounded-lg p-4 border border-slate-600/30">
+                        <p className="font-semibold text-yellow-200 mb-2">🔓 Encryption Status:</p>
+                        <p>
+                          Chats are currently <span className="font-bold text-yellow-300 bg-yellow-500/20 px-2 py-1 rounded-md border border-yellow-400/30">NOT end-to-end encrypted</span>
+                        </p>
+                      </div>
+                      
+                      <div className="bg-slate-900/40 rounded-lg p-4 border border-slate-600/30">
+                        <p className="font-semibold text-orange-200 mb-2">💾 Data Storage:</p>
+                        <p>
+                          All messages are stored <span className="font-bold text-orange-300 bg-red-500/20 px-2 py-1 rounded-md border border-red-400/30">unencrypted</span> in the database
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Action Notice */}
+                    <div className="flex items-start gap-3 p-4 bg-blue-500/10 rounded-lg border border-blue-400/30">
+                      <Info className="h-5 w-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm sm:text-base text-blue-200 font-semibold mb-1">
+                          Important Recommendation:
+                        </p>
+                        <p className="text-xs sm:text-sm text-slate-300">
+                          Please avoid sharing sensitive personal information, passwords, financial data, or confidential content until full encryption is implemented.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Hero Section */}
           <div className="flex flex-col items-center gap-6 mb-8 text-center lg:flex-row lg:text-left lg:gap-8">
             <div className="relative group">
