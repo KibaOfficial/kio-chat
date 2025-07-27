@@ -34,9 +34,9 @@ function calculateUptime(): string {
 
 function getBaseUrl(): string {
   // In production, use VERCEL_URL or custom domain
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
+  // if (process.env.VERCEL_URL) {
+  //   return `https://${process.env.VERCEL_URL}`;
+  // }
   
   // Custom domain (add to your .env)
   if (process.env.NEXTAUTH_URL) {

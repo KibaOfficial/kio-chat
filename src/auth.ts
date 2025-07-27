@@ -25,6 +25,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           where: { email: (credentials.email as string).toLowerCase() },
         });
         if (!user || !user.password) return null;
+        if (!user.approved) {
+          // Throw error to show message in UI (NextAuth will catch and display)
+          throw new Error("Dein Account wurde noch nicht freigeschaltet. Bitte warte auf die Freigabe durch einen Admin.");
+        }
         const isValid = await bcrypt.compare(credentials.password as string, user.password);
         if (!isValid) return null;
         return { id: user.id, name: user.name, email: user.email };
