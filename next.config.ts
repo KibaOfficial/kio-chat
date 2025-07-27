@@ -25,8 +25,6 @@ const nextConfig: NextConfig = {
       }
     ]
   },
-  // Experimental features removed for compatibility with Next.js 15
-  
   // TypeScript Konfiguration
   typescript: {
     ignoreBuildErrors: false,
@@ -37,13 +35,10 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: false,
   },
 
-  // Ausgabe Konfiguration für bessere Vercel Performance
-  output: 'standalone',
-
   // WICHTIG: Force dynamic rendering für problematische Routes
-  async generateStaticParams() {
-    return []
-  },
+  // async generateStaticParams() {
+  //   return []
+  // },
 
   // Alternative: Redirect/Rewrites falls nötig
   async redirects() {

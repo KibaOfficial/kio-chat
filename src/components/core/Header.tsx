@@ -7,7 +7,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { AuthButton } from "../auth/AuthButton";
 import { useToastWithSound } from "@/lib/toast/toast-wrapper";
@@ -55,6 +55,7 @@ export function Header() {
   };
 
   return (
+    <Suspense fallback={<div className="text-center text-white py-12">Loading...</div>}>
     <header className="w-full bg-bgdark/95 border-b border-accent shadow-md">
       <div className="max-w-6xl mx-auto w-full flex items-center justify-between px-6 py-4">
         {/* Left: Logo + Title */}
@@ -240,6 +241,7 @@ export function Header() {
         </div>
       </nav>
     </header>
+    </Suspense>
   );
 }
 

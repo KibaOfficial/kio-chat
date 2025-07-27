@@ -7,9 +7,7 @@
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 import InfoCard from "@/components/core/InfoCard";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useEffect } from "react";
-import { useToastWithSound } from "@/lib/toast/toast-wrapper";
+import { Suspense } from "react";
 
 
 const HomeComponent = () => {

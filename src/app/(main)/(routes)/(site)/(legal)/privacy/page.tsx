@@ -7,7 +7,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Shield, Users, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 const PrivacyPage = () => {
   const [lang, setLang] = useState("en");
@@ -16,6 +16,7 @@ const PrivacyPage = () => {
   const lastUpdated = "July 20, 2025";
 
   return (
+    <Suspense fallback={<div className="text-center text-white py-12">Loading...</div>}>
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
@@ -392,6 +393,7 @@ const PrivacyPage = () => {
         )}
       </div>
     </div>
+    </Suspense>
   );
 };
 

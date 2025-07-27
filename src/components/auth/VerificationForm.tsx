@@ -51,6 +51,7 @@ const VerificationContent = () => {
   }, [onSubmit]);
 
   return (
+    <Suspense fallback={<div className="text-center text-white py-12">Loading...</div>}>
     <Card className="w-full max-w-md mx-auto p-8 bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 border border-slate-700/50 shadow-2xl rounded-2xl">
       <CardHeader>
         <div className="w-full flex flex-col gap-y-3 items-center justify-center">
@@ -81,6 +82,7 @@ const VerificationContent = () => {
         )}
       </div>
     </Card>
+    </Suspense>
   );
 };
 

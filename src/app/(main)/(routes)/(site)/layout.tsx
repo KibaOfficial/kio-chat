@@ -5,22 +5,22 @@
 "use client";
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+
+
+import { Suspense, ReactNode } from "react";
 import Header from "@/components/core/Header";
 import Footer from "@/components/core/Footer";
-import { useSearchParams } from "next/navigation";
-import { useToastWithSound } from "@/lib/toast/toast-wrapper";
-import { useEffect } from "react";
 
-export default function SiteLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+interface SiteLayoutProps {
+  children: ReactNode;
+}
+
+export default function SiteLayout({ children }: SiteLayoutProps) {
   return (
-    <>
+    <Suspense fallback={<div className="text-center text-white py-12">Lade Seite...</div>}>
       <Header />
       {children}
       <Footer />
-    </>
+    </Suspense>
   );
 }

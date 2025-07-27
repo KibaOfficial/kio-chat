@@ -10,5 +10,5 @@ export const config = {
   matcher: [
     "/app/:path*"
   ],
-  runtime: "nodejs", // Ensure this is set to nodejs for compatibility with NextAuth
+  // runtime: "nodejs", // Ensure this is set to nodejs for compatibility with NextAuth
 }
