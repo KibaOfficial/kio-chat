@@ -6,7 +6,7 @@
 import { auth } from "@/auth";
 import { prisma } from "../prisma";
 
-export const currentUser = async () => {
+export const getCurrentUser = async () => {
   const session = await auth();
 
   if (!session?.user?.id) return null;

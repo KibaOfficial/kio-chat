@@ -26,22 +26,15 @@ interface GitHubStats {
 }
 
 // Fallback data für Build-Zeit und Fehler
-const getFallbackStats = (): GitHubStats => ({
-  stars: 0,
-  version: '1.0.0',
-  language: 'TypeScript',
-  lastUpdated: new Date().toISOString()
-});
+// const getFallbackStats = (): GitHubStats => ({
+//   stars: 0,
+//   version: '1.0.0',
+//   language: 'TypeScript',
+//   lastUpdated: new Date().toISOString()
+// });
 
 export async function GET() {
   try {
-    // Check if we're in build time
-    const isBuildTime = process.env.NODE_ENV === 'production' || process.env.VERCEL_URL;
-    
-    if (isBuildTime) {
-      console.log('[GitHub API] Build time detected, returning fallback data');
-      return NextResponse.json(getFallbackStats());
-    }
 
     // 1. Get repository stats with timeout and better error handling
     const controller = new AbortController();
@@ -121,12 +114,18 @@ export async function GET() {
 
     // Return fallback data with 200 status instead of 500
     // This prevents the build from failing
-    return NextResponse.json(getFallbackStats(), { 
-      status: 200,
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate'
-      }
-    });
+    // return NextResponse.json(getFallbackStats(), { 
+    //   status: 200,
+    //   headers: {
+    //     'Cache-Control': 'no-cache, no-store, must-revalidate'
+    //   }
+    // });
+    return NextResponse.json({
+      stars: 0,
+      version: 'error',
+      language: 'error',
+      lastUpdated: new Date().toISOString()
+    })
   }
 }
 

@@ -2,9 +2,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { NextAuthProvider } from "@/components/NextAuthProvider";
-import { Toaster } from "sonner";
 import ServiceWorkerRegistration from "@/components/serviceworker/ServiceWorkerRegistration";
 import { ModalProvider } from "@/components/providers/modalProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Kio Chat",
@@ -50,12 +50,9 @@ export default function RootLayout({
         <NextAuthProvider>
           <ModalProvider />
           {children}
-          <Toaster richColors position="top-right" />
-          {/* <ServiceWorkerRegistration /> */}
+          <Toaster richColors position="top-right" kioTheme="aurora" />
+          <ServiceWorkerRegistration />
         </NextAuthProvider>
-        
-        
-        
       </body>
     </html>
   );

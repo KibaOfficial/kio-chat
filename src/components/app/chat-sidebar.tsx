@@ -56,7 +56,7 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
   return (
     <aside className="w-80 h-full bg-slate-900/60 backdrop-blur-xl border-r border-slate-800/50 shadow-2xl flex flex-col relative">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-800/50 bg-gradient-to-r from-slate-900/80 to-slate-800/50 flex-shrink-0">
+      <div className="h-16 px-6 py-4 border-b border-slate-800/50 bg-gradient-to-r from-slate-900/80 to-slate-800/50 flex-shrink-0 flex items-center">
         <h2 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
           Your Chats
         </h2>

@@ -10,12 +10,12 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 
 interface UserAvatarProps {
   src?: string;
-  classname?: string;
+  className?: string;
 }
 
 const UserAvatar = ({
   src,
-  classname
+  className
 }: UserAvatarProps) => {
   // Default avatar from pravatar.cc if none provided
   const defaultAvatar = "https://i.pravatar.cc/150?u=default";
@@ -23,7 +23,7 @@ const UserAvatar = ({
     <Avatar
       className={cn(
         "h-7 w-7 md:h-10 md:w-10",
-        classname
+        className
       )}
     >
       <AvatarImage src={src || defaultAvatar} />

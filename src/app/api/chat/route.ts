@@ -4,11 +4,11 @@
 // https://opensource.org/licenses/MIT
 export const runtime = "nodejs";
 import { prisma } from "@/lib/prisma";
-import { currentUser } from "@/lib/user/current-profile";
+import { getCurrentUser } from "@/lib/user/current-profile";
 
 export async function POST(req: Request) {
   try {
-    const user = await currentUser();
+    const user = await getCurrentUser();
     const { username, isGroup } = await req.json();
     
     if (!user) {
