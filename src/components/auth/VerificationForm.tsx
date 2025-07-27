@@ -1,16 +1,19 @@
+// VerificationForm.tsx
 // Copyright (c) 2025 KibaOfficial
 // 
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
+"use client"
 
 import { Verification } from "@/lib/auth/verify";
 import { useSearchParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, Suspense } from "react";
 import { toast } from "sonner";
 import { Card, CardHeader } from "../ui/card";
 import { Loader2, Lock } from "lucide-react";
 
-export const VerificationForm = () => {
+// Separate Komponente für die Verification Logic
+const VerificationContent = () => {
   const [ error, setError ] = useState<string | undefined>();
   const [ success, setSuccess ] = useState<string | undefined>();
   const searchParams = useSearchParams();
@@ -76,5 +79,36 @@ export const VerificationForm = () => {
         )}
       </div>
     </Card>
+  );
+};
+
+// Loading Fallback
+const VerificationLoading = () => (
+  <Card className="w-full max-w-md mx-auto p-8 bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 border border-slate-700/50 shadow-2xl rounded-2xl">
+    <CardHeader>
+      <div className="w-full flex flex-col gap-y-3 items-center justify-center">
+        <div className="flex items-center justify-center mb-4">
+          <Lock className="text-7xl text-blue-500 drop-shadow-lg" />
+          <h1 className="text-5xl font-extrabold text-white ml-3 select-none">
+            Verification
+          </h1>
+        </div>
+        <p className="text-gray-300 text-center text-base font-medium">
+          Loading verification...
+        </p>
+      </div>
+    </CardHeader>
+    <div className="mt-6 flex items-center justify-center min-h-[60px]">
+      <Loader2 className="animate-spin text-blue-400 w-8 h-8" />
+    </div>
+  </Card>
+);
+
+// Hauptkomponente mit Suspense INNERHALB der Client Component
+export const VerificationForm = () => {
+  return (
+    <Suspense fallback={<VerificationLoading />}>
+      <VerificationContent />
+    </Suspense>
   );
 }

@@ -2,7 +2,7 @@
 // 
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
-
+export const runtime = "nodejs";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@/lib/user/current-profile";
 

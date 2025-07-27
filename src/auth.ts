@@ -2,6 +2,7 @@
 // 
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
+export const runtime = "nodejs";
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";

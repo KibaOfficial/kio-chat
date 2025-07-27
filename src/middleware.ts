@@ -9,5 +9,6 @@ export { auth as middleware } from "@/auth";
 export const config = {
   matcher: [
     "/app/:path*"
-  ]
+  ],
+  runtime: "nodejs", // Ensure this is set to nodejs for compatibility with NextAuth
 }

@@ -2,7 +2,7 @@
 // 
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
-
+export const runtime = "nodejs";
 import { prisma } from "@/lib/prisma";
 import { generateVerificationToken } from "@/lib/auth/tokens";
 import bcrypt from "bcryptjs";
