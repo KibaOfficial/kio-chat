@@ -49,6 +49,7 @@ model User {
   email         String    @unique
   password      String?
   emailVerified Boolean   @default(false) @map("email_verified")
+  approved      Boolean   @default(false)
   image         String?
   accounts      Account[]
   sessions      Session[]
