@@ -6,15 +6,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { AuthButton } from "../auth/AuthButton";
+import { useToastWithSound } from "@/lib/toast/toast-wrapper";
 
 export function Header() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const searchParams = useSearchParams();
+  const { toast } = useToastWithSound();
+  useEffect(() => {
+    if (searchParams.get("unauth") === "1") {
+      toast.error("You need to be logged in to access the dashboard");
+    }
+  }, [searchParams, toast]);
 
   useEffect(() => {
     setMounted(true);

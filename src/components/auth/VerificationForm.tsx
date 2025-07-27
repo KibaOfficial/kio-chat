@@ -5,6 +5,8 @@
 // https://opensource.org/licenses/MIT
 "use client"
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 import { Verification } from "@/lib/auth/verify";
 import { useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState, Suspense } from "react";

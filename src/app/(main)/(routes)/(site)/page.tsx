@@ -4,6 +4,8 @@
 // https://opensource.org/licenses/MIT
 "use client";
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 import InfoCard from "@/components/core/InfoCard";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";

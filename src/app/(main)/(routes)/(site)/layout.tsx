@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 "use client";
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 import Header from "@/components/core/Header";
 import Footer from "@/components/core/Footer";
 import { useSearchParams } from "next/navigation";
@@ -14,16 +16,6 @@ export default function SiteLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-  const searchParams = useSearchParams();
-  const { toast } = useToastWithSound();
-  useEffect(() => {
-    if (searchParams.get("unauth") === "1") {
-      toast.error("You need to be logged in to access the dashboard");
-    }
-  }, [searchParams, toast]);
-
-
   return (
     <>
       <Header />
