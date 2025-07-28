@@ -6,6 +6,7 @@
 import { ChatHeader } from "@/components/app/chat/ChatHeader";
 import { ChatMessages } from "@/components/app/chat/ChatMessages";
 import { ChatInput } from "@/components/app/chat/Input";
+import ChatSidebarWrapper from "@/components/app/ChatSidebarWrapper";
 import { getChatById } from "@/lib/chat/chatUtils";
 import { getCurrentUser } from "@/lib/user/current-profile";
 import { redirect } from "next/navigation";
@@ -53,31 +54,39 @@ const ChatIdPage = async ({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full bg-gradient-to-br from-slate-950/90 via-slate-900/80 to-slate-900/60 backdrop-blur-xl p-0">
-      <div className="w-full h-full flex flex-col grow shadow-2xl border border-slate-800/50 bg-slate-900/60 backdrop-blur-xl overflow-hidden">
+    <div className="flex h-full bg-gradient-to-br from-slate-950/90 via-slate-900/80 to-slate-900/60 backdrop-blur-xl">
+      {/* Sidebar nur auf Desktop anzeigen */}
+      <div className="hidden md:block">
+        <ChatSidebarWrapper />
+      </div>
+      
+      {/* Chat Content */}
+      <div className="flex-1 flex flex-col shadow-2xl border border-slate-800/50 bg-slate-900/60 backdrop-blur-xl overflow-hidden">
         {/* Chat Header */}
         <ChatHeader 
           name={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
           lastOnline="Just now"
           image={commonChat.users.find(u => u.user.id !== user.id)?.user.image || ""}
         />
+        
+        {/* Chat Messages */}
         <ChatMessages
           name={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
           chatId={chatId}
           currentUserId={user.id}
         />
+        
+        {/* Chat Input */}
         <div className="px-2 pb-2">
           <ChatInput
             chatId={chatId}
             userName={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
-            senderId={user.id} // Pass the user ID directly
+            senderId={user.id}
           />
         </div>
       </div>
     </div>
-  )
-  
+  );
 }
 
- 
 export default ChatIdPage;

@@ -3,8 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import ChatSidebarWrapper from "@/components/app/ChatSidebarWrapper";
-
 function AppLayout({
   children
 }: {
@@ -12,11 +10,8 @@ function AppLayout({
 }) {
   return (
     <div className={'h-full'}>
-      <main className="flex h-full bg-background text-foreground">
-        <ChatSidebarWrapper />
-        <div className="flex-1 flex flex-col">
-          {children}
-        </div>
+      <main className="h-full bg-background text-foreground">
+        {children}
       </main>
     </div>
   );
