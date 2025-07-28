@@ -17,9 +17,11 @@ export async function POST(request: Request) {
       });
     }
 
+    const mail = `${email}`.toLowerCase().trim();
+
     // Check if the user exists and is verified
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { email: mail },
       select: { emailVerified: true },
     });
 
