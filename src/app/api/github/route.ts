@@ -38,7 +38,7 @@ export async function GET() {
 
     // 1. Get repository stats with timeout and better error handling
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const timeout = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
     const repoResponse = await fetch('https://api.github.com/repos/KibaOfficial/kio-chat', {
       signal: controller.signal,
@@ -62,7 +62,7 @@ export async function GET() {
 
     // 2. Get version from package.json with timeout
     const packageController = new AbortController();
-    const packageTimeout = setTimeout(() => packageController.abort(), 5000);
+    const packageTimeout = setTimeout(() => packageController.abort(), 10000);
 
     const packageResponse = await fetch('https://api.github.com/repos/KibaOfficial/kio-chat/contents/package.json', {
       signal: packageController.signal,
@@ -112,14 +112,6 @@ export async function GET() {
       }
     }
 
-    // Return fallback data with 200 status instead of 500
-    // This prevents the build from failing
-    // return NextResponse.json(getFallbackStats(), { 
-    //   status: 200,
-    //   headers: {
-    //     'Cache-Control': 'no-cache, no-store, must-revalidate'
-    //   }
-    // });
     return NextResponse.json({
       stars: 0,
       version: 'error',
@@ -128,32 +120,3 @@ export async function GET() {
     })
   }
 }
-
-// app/api/github/route.ts - Temporarily disabled for deployment
-// Copyright (c) 2025 KibaOfficial
-// 
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-// import { NextResponse } from "next/server";
-
-// export const revalidate = 300;
-
-// interface GitHubStats {
-//   stars: number;
-//   version: string;
-//   language: string;
-//   lastUpdated: string;
-// }
-
-// export async function GET() {
-//   // Temporarily return static data to fix deployment
-//   const stats: GitHubStats = {
-//     stars: 5,
-//     version: '1.0.0',
-//     language: 'TypeScript',
-//     lastUpdated: new Date().toISOString()
-//   };
-
-//   return NextResponse.json(stats);
-// }
