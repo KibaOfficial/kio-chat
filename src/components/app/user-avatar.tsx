@@ -5,28 +5,38 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarImage } from "../ui/avatar";
-
+import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 interface UserAvatarProps {
-  src?: string;
+  src?: string | null;
   className?: string;
+  fallbackText?: string;
+  showFallback?: boolean;
 }
 
 const UserAvatar = ({
   src,
-  className
+  className,
+  fallbackText,
+  showFallback = true
 }: UserAvatarProps) => {
   // Default avatar from pravatar.cc if none provided
   const defaultAvatar = "https://i.pravatar.cc/150?u=default";
+  
   return (
     <Avatar
       className={cn(
-        "h-7 w-7 md:h-10 md:w-10",
+        // Only apply default size if no size classes are provided in className
+        !className?.includes('w-') && !className?.includes('h-') && "h-7 w-7 md:h-10 md:w-10",
         className
       )}
     >
       <AvatarImage src={src || defaultAvatar} />
+      {showFallback && fallbackText && (
+        <AvatarFallback className="bg-indigo-500 text-white font-semibold">
+          {fallbackText}
+        </AvatarFallback>
+      )}
     </Avatar>
   );
 }
