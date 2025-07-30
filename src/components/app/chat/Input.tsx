@@ -27,7 +27,7 @@ interface ChatInputProps {
 export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
   // Socket.IO-Client initialisieren (Memoized, damit nicht bei jedem Render neu)
   const socket = useMemo(() => {
-    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "wss://kiochatws.kibaofficial.net";
+    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL!;
     return io(url);
   }, []);
   const form = useForm<z.infer<typeof formSchema>>({
