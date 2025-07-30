@@ -22,6 +22,18 @@ const nextConfig: NextConfig = {
         hostname: 'i.pravatar.cc',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'utfs.io',
+        port: '',
+        pathname: '/f/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'sdsy3wlboo.ufs.sh',
+        port: '',
+        pathname: '/f/**',
       }
     ]
   },

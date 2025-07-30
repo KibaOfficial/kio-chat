@@ -12,6 +12,8 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { useModal } from "@/components/hooks/useModal";
 import UserAvatar from "../user-avatar";
+import { FileIcon, ImageIcon, Download } from "lucide-react";
+import Image from "next/image";
 
 interface ChatMessagesProps {
   name: string;
@@ -19,6 +21,28 @@ interface ChatMessagesProps {
   currentUserId: string;
   currentUser?: any; // Current user data for the modal
 }
+
+// Helper function to determine if URL or fileName is an image
+const isImageFile = (url: string, fileName?: string) => {
+  // Check filename first if available
+  if (fileName && /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName)) {
+    return true;
+  }
+  // Fallback to URL check
+  return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
+};
+
+// Helper function to get filename from URL  
+const getFileName = (url: string) => {
+  if (!url) return 'file';
+  try {
+    const urlObj = new URL(url);
+    const pathname = urlObj.pathname;
+    return pathname.split('/').pop() || 'file';
+  } catch {
+    return url.split('/').pop() || 'file';
+  }
+};
 
 export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatMessagesProps) => {
   const [messages, setMessages] = useState<any[]>([]);
@@ -93,7 +117,14 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
     socketRef.current = socket;
     socket.emit("join", chatId);
     socket.on("message", (msg: any) => {
-      setMessages((prev) => [...prev, msg]);
+      setMessages((prev) => {
+        // Check if message already exists to prevent duplicates
+        const exists = prev.some(existingMsg => existingMsg.id === msg.id);
+        if (exists) {
+          return prev;
+        }
+        return [...prev, msg];
+      });
     });
     return () => {
       socket.emit("leave", chatId);
@@ -114,9 +145,12 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
           const isOwn = (m.sender?.id || m.senderId) === currentUserId;
           const messageUser = m.sender || { id: m.senderId };
           
+          // Create unique key combining id and timestamp to prevent duplicates
+          const uniqueKey = m.id ? `${m.id}-${m.createdAt || i}` : `temp-${i}-${Date.now()}`;
+          
           return (
             <div
-              key={m.id || i}
+              key={uniqueKey}
               className={`flex items-end gap-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}
             >
               {/* User Avatar */}
@@ -134,54 +168,147 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
               <div
                 className={
                   isOwn
-                    ? "max-w-[70%] bg-gradient-to-br from-blue-600/80 to-purple-600/80 text-white rounded-2xl rounded-br-md px-4 py-2 shadow-lg break-words overflow-hidden"
-                    : "max-w-[70%] bg-slate-800/80 text-slate-100 rounded-2xl rounded-bl-md px-4 py-2 shadow-md border border-slate-700/60 break-words overflow-hidden"
+                    ? `max-w-[70%] bg-gradient-to-br from-blue-600/80 to-purple-600/80 text-white rounded-2xl rounded-br-md shadow-lg break-words overflow-hidden ${
+                        (m.fileUrl && isImageFile(m.fileUrl, m.fileName) && (!m.content || m.content.startsWith('📎'))) 
+                          ? 'p-1' 
+                          : (m.fileUrl && isImageFile(m.fileUrl, m.fileName)) 
+                            ? 'p-1' 
+                            : 'px-4 py-2'
+                      }`
+                    : `max-w-[70%] bg-slate-800/80 text-slate-100 rounded-2xl rounded-bl-md shadow-md border border-slate-700/60 break-words overflow-hidden ${
+                        (m.fileUrl && isImageFile(m.fileUrl, m.fileName) && (!m.content || m.content.startsWith('📎'))) 
+                          ? 'p-1' 
+                          : (m.fileUrl && isImageFile(m.fileUrl, m.fileName)) 
+                            ? 'p-1' 
+                            : 'px-4 py-2'
+                      }`
                 }
               >
-                <div className="overflow-x-auto">
-                  <ReactMarkdown
-                    rehypePlugins={[rehypeHighlight]}
-                    components={{
-                      // Paragraph wrapping
-                      p: ({children}) => (
-                        <p className="break-words whitespace-pre-wrap">{children}</p>
-                      ),
-                      // Code blocks with proper wrapping
-                      code({node, className = "", children, ...props}) {
-                        const codeRef = useRef<HTMLElement>(null);
-                        const isBlock = (className || "").includes("language-");
-                        const handleCopy = () => {
-                          if (codeRef.current) {
-                            navigator.clipboard.writeText(codeRef.current.innerText || "");
-                          }
-                        };
-                        return isBlock ? (
-                          <div className="relative group my-2">
-                            <pre className={`${className} overflow-x-auto`} style={{margin:0}}>
-                              <code ref={codeRef} className="whitespace-pre-wrap break-all" {...props}>{children}</code>
-                            </pre>
-                            <button
-                              type="button"
-                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-zinc-700/80 text-xs text-white px-2 py-1 rounded hover:bg-zinc-800 z-10"
-                              title="Copy code"
-                              onClick={handleCopy}
-                            >
-                              Copy
-                            </button>
+                {/* File Attachment */}
+                {(m.fileUrl || (m.content && m.content.includes('📎'))) && (
+                  <div className="">
+                    {m.fileUrl ? (
+                      // Has fileUrl - show properly
+                      isImageFile(m.fileUrl, m.fileName) ? (
+                        // Image Preview with Next.js Image
+                        <div className="relative group">
+                          <div className="relative rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                            <Image 
+                              src={m.fileUrl} 
+                              alt={m.fileName || "Uploaded image"}
+                              width={400}
+                              height={256}
+                              className="object-cover w-full h-auto max-h-64 rounded-lg"
+                              onClick={() => window.open(m.fileUrl, '_blank')}
+                              unoptimized // UploadThing URLs might need this
+                            />
                           </div>
-                        ) : (
-                          <code className={`${className} break-words whitespace-pre-wrap`} {...props}>{children}</code>
-                        );
-                      },
-                      // Long links should break
-                      a: ({children, ...props}) => (
-                        <a {...props} className="break-all underline hover:opacity-80">
-                          {children}
-                        </a>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <a 
+                              href={m.fileUrl} 
+                              download={m.fileName}
+                              className="bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                              title="Download image"
+                            >
+                              <Download size={16} />
+                            </a>
+                          </div>
+                        </div>
+                      ) : (
+                        // File Download Link
+                        <div className={`flex items-center gap-3 p-3 rounded-lg ${
+                          isOwn 
+                            ? 'bg-white/10 hover:bg-white/20' 
+                            : 'bg-slate-700/50 hover:bg-slate-700/70'
+                        } transition-colors cursor-pointer`}>
+                          <FileIcon size={24} className="text-blue-400 flex-shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-medium truncate">
+                              {getFileName(m.fileUrl)}
+                            </div>
+                            <div className="text-xs opacity-70">
+                              Click to download
+                            </div>
+                          </div>
+                          <a 
+                            href={m.fileUrl} 
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                            title="Open file"
+                          >
+                            <Download size={16} />
+                          </a>
+                        </div>
                       )
-                    }}
-                  >{m.content}</ReactMarkdown>
-                </div>
+                    ) : (
+                      // No fileUrl but has 📎 - show placeholder
+                      <div className={`flex items-center gap-3 p-3 rounded-lg ${
+                        isOwn 
+                          ? 'bg-white/10' 
+                          : 'bg-slate-700/50'
+                      }`}>
+                        <FileIcon size={24} className="text-orange-400 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium truncate">
+                            File uploaded (URL missing)
+                          </div>
+                          <div className="text-xs opacity-70">
+                            Server needs to save fileUrl
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Text Content */}
+                {m.content && !m.content.startsWith('📎') && (
+                  <div className={`overflow-x-auto ${m.fileUrl && isImageFile(m.fileUrl, m.fileName) ? 'px-3 pb-1' : ''}`}>
+                    <ReactMarkdown
+                      rehypePlugins={[rehypeHighlight]}
+                      components={{
+                        // Paragraph wrapping
+                        p: ({children}) => (
+                          <p className="break-words whitespace-pre-wrap">{children}</p>
+                        ),
+                        // Code blocks with proper wrapping
+                        code({node, className = "", children, ...props}) {
+                          const codeRef = useRef<HTMLElement>(null);
+                          const isBlock = (className || "").includes("language-");
+                          const handleCopy = () => {
+                            if (codeRef.current) {
+                              navigator.clipboard.writeText(codeRef.current.innerText || "");
+                            }
+                          };
+                          return isBlock ? (
+                            <div className="relative group my-2">
+                              <pre className={`${className} overflow-x-auto`} style={{margin:0}}>
+                                <code ref={codeRef} className="whitespace-pre-wrap break-all" {...props}>{children}</code>
+                              </pre>
+                              <button
+                                type="button"
+                                className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-zinc-700/80 text-xs text-white px-2 py-1 rounded hover:bg-zinc-800 z-10"
+                                title="Copy code"
+                                onClick={handleCopy}
+                              >
+                                Copy
+                              </button>
+                            </div>
+                          ) : (
+                            <code className={`${className} break-words whitespace-pre-wrap`} {...props}>{children}</code>
+                          );
+                        },
+                        // Long links should break
+                        a: ({children, ...props}) => (
+                          <a {...props} className="break-all underline hover:opacity-80">
+                            {children}
+                          </a>
+                        )
+                      }}
+                    >{m.content}</ReactMarkdown>
+                  </div>
+                )}
               </div>
             </div>
           );
