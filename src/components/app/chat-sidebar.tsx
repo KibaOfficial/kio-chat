@@ -36,8 +36,13 @@ const DUMMY_DATA = [
 ];
 
 interface ChatSidebarProps {
-  user: { id: string };
+  user: { 
+    id: string;
+    image: string | null;
+    name: string;
+  };
   chats: any[];
+  
 }
 
 const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
@@ -60,6 +65,17 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
         <h2 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
           Your Chats
         </h2>
+        {/* User Avatar for the logged-in user - clickable to open edit profile */}
+        <button
+          onClick={() => onOpen('editProfile')}
+          className="ml-auto hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-full"
+          aria-label="Edit Profile"
+        >
+          <UserAvatar 
+            src={user.image} 
+            className="w-10 h-10 rounded-full border-2 border-slate-800 hover:border-blue-400 transition-colors"
+          />
+        </button>
       </div>
 
       {/* Chat List - mit padding-bottom für den Button */}

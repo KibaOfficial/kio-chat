@@ -6,6 +6,8 @@
 
 import { useEffect, useState } from "react";
 import { CreateChatModal } from "../modals/createChat";
+import { EditProfileModal } from "../modals/editProfile";
+import { UserCardModal } from "../modals/userCard";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -21,6 +23,8 @@ export const ModalProvider = () => {
   return (
     <>
       <CreateChatModal />
+      <EditProfileModal />
+      <UserCardModal />
     </>
   )
 }

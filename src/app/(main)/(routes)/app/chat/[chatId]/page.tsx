@@ -26,7 +26,6 @@ const ChatIdPage = async ({
 
   if (!user) {
     redirect("/auth/?unauth=1");
-    return null;
   }
 
   // Validate chatId

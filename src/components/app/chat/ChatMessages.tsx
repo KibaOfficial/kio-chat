@@ -4,20 +4,23 @@
 // https://opensource.org/licenses/MIT
 
 "use client"
-import { useEffect, useRef, useState, useCallback, Fragment } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import io from "socket.io-client";
 import qs from "query-string";
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
+import { useModal } from "@/components/hooks/useModal";
+import UserAvatar from "../user-avatar";
 
 interface ChatMessagesProps {
   name: string;
   chatId: string;
   currentUserId: string;
+  currentUser?: any; // Current user data for the modal
 }
 
-export const ChatMessages = ({ name, chatId, currentUserId }: ChatMessagesProps) => {
+export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatMessagesProps) => {
   const [messages, setMessages] = useState<any[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -25,6 +28,15 @@ export const ChatMessages = ({ name, chatId, currentUserId }: ChatMessagesProps)
   const chatRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const socketRef = useRef<any>(null);
+  const { onOpen } = useModal();
+
+  // Handle avatar click to open user card modal
+  const handleAvatarClick = (user: any) => {
+    onOpen('userCard', { 
+      user: user,
+      currentUser: currentUser 
+    });
+  };
 
   // Fetch messages paginated (newest first)
   const fetchMessages = useCallback(async (cursorParam?: string) => {
@@ -96,72 +108,80 @@ export const ChatMessages = ({ name, chatId, currentUserId }: ChatMessagesProps)
 
   return (
     <div className="flex-1 flex flex-col py-4 overflow-y-auto" ref={chatRef}>
-      {/* Chat Header */}
-      {/* <div className="px-6 py-3 mb-2 rounded-2xl bg-gradient-to-r from-blue-900/60 via-purple-900/50 to-emerald-900/40 border border-slate-800/50 shadow-xl backdrop-blur-xl">
-        <p className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
-          @{name}
-        </p>
-        <p className="text-slate-400 text-sm mt-1">
-          This is the start of your conversation with <span className="font-semibold">@{name}</span>.
-        </p>
-      </div> */}
-
       {/* Chat Messages */}
       <div className="flex flex-col gap-3 px-2 pb-2 mt-auto">
         {messages.map((m, i) => {
           const isOwn = (m.sender?.id || m.senderId) === currentUserId;
+          const messageUser = m.sender || { id: m.senderId };
+          
           return (
             <div
               key={m.id || i}
-              className={
-                isOwn
-                  ? "self-end max-w-[70%] bg-gradient-to-br from-blue-600/80 to-purple-600/80 text-white rounded-2xl rounded-br-md px-4 py-2 shadow-lg break-words overflow-hidden"
-                  : "self-start max-w-[70%] bg-slate-800/80 text-slate-100 rounded-2xl rounded-bl-md px-4 py-2 shadow-md border border-slate-700/60 break-words overflow-hidden"
-              }
+              className={`flex items-end gap-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              <div className="overflow-x-auto">
-                <ReactMarkdown
-                  rehypePlugins={[rehypeHighlight]}
-                  components={{
-                    // Paragraph wrapping
-                    p: ({children}) => (
-                      <p className="break-words whitespace-pre-wrap">{children}</p>
-                    ),
-                    // Code blocks with proper wrapping
-                    code({node, className = "", children, ...props}) {
-                      const codeRef = useRef<HTMLElement>(null);
-                      const isBlock = (className || "").includes("language-");
-                      const handleCopy = () => {
-                        if (codeRef.current) {
-                          navigator.clipboard.writeText(codeRef.current.innerText || "");
-                        }
-                      };
-                      return isBlock ? (
-                        <div className="relative group my-2">
-                          <pre className={`${className} overflow-x-auto`} style={{margin:0}}>
-                            <code ref={codeRef} className="whitespace-pre-wrap break-all" {...props}>{children}</code>
-                          </pre>
-                          <button
-                            type="button"
-                            className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-zinc-700/80 text-xs text-white px-2 py-1 rounded hover:bg-zinc-800 z-10"
-                            title="Copy code"
-                            onClick={handleCopy}
-                          >
-                            Copy
-                          </button>
-                        </div>
-                      ) : (
-                        <code className={`${className} break-words whitespace-pre-wrap`} {...props}>{children}</code>
-                      );
-                    },
-                    // Long links should break
-                    a: ({children, ...props}) => (
-                      <a {...props} className="break-all underline hover:opacity-80">
-                        {children}
-                      </a>
-                    )
-                  }}
-                >{m.content}</ReactMarkdown>
+              {/* User Avatar */}
+              <div 
+                className="cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => handleAvatarClick(messageUser)}
+              >
+                <UserAvatar 
+                  src={messageUser.image} 
+                  className="h-8 w-8"
+                />
+              </div>
+              
+              {/* Message Bubble */}
+              <div
+                className={
+                  isOwn
+                    ? "max-w-[70%] bg-gradient-to-br from-blue-600/80 to-purple-600/80 text-white rounded-2xl rounded-br-md px-4 py-2 shadow-lg break-words overflow-hidden"
+                    : "max-w-[70%] bg-slate-800/80 text-slate-100 rounded-2xl rounded-bl-md px-4 py-2 shadow-md border border-slate-700/60 break-words overflow-hidden"
+                }
+              >
+                <div className="overflow-x-auto">
+                  <ReactMarkdown
+                    rehypePlugins={[rehypeHighlight]}
+                    components={{
+                      // Paragraph wrapping
+                      p: ({children}) => (
+                        <p className="break-words whitespace-pre-wrap">{children}</p>
+                      ),
+                      // Code blocks with proper wrapping
+                      code({node, className = "", children, ...props}) {
+                        const codeRef = useRef<HTMLElement>(null);
+                        const isBlock = (className || "").includes("language-");
+                        const handleCopy = () => {
+                          if (codeRef.current) {
+                            navigator.clipboard.writeText(codeRef.current.innerText || "");
+                          }
+                        };
+                        return isBlock ? (
+                          <div className="relative group my-2">
+                            <pre className={`${className} overflow-x-auto`} style={{margin:0}}>
+                              <code ref={codeRef} className="whitespace-pre-wrap break-all" {...props}>{children}</code>
+                            </pre>
+                            <button
+                              type="button"
+                              className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-zinc-700/80 text-xs text-white px-2 py-1 rounded hover:bg-zinc-800 z-10"
+                              title="Copy code"
+                              onClick={handleCopy}
+                            >
+                              Copy
+                            </button>
+                          </div>
+                        ) : (
+                          <code className={`${className} break-words whitespace-pre-wrap`} {...props}>{children}</code>
+                        );
+                      },
+                      // Long links should break
+                      a: ({children, ...props}) => (
+                        <a {...props} className="break-all underline hover:opacity-80">
+                          {children}
+                        </a>
+                      )
+                    }}
+                  >{m.content}</ReactMarkdown>
+                </div>
               </div>
             </div>
           );
