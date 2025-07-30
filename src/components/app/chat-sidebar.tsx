@@ -67,7 +67,7 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
         </h2>
         {/* User Avatar for the logged-in user - clickable to open edit profile */}
         <button
-          onClick={() => onOpen('editProfile')}
+          onClick={() => onOpen('editProfile', { user })}
           className="ml-auto hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-full"
           aria-label="Edit Profile"
         >
@@ -114,7 +114,6 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
           className="p-4 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 shadow-xl hover:scale-105 transition-transform border-4 border-slate-900/80 focus:outline-none focus:ring-2 focus:ring-blue-400 pointer-events-auto"
           aria-label="Start new chat"
           onClick={() => {
-            console.log('Button clicked!'); // Debug log
             onOpen('createNewChat');
           }}
         >

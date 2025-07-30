@@ -5,6 +5,7 @@ import { auth } from "@/auth";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { UploadButtonTestCardWithTimeout } from "@/components/admin/UploadButtonTestCard";
 
 export default async function AdminPage() {
   const session = await auth();
@@ -74,6 +75,8 @@ export default async function AdminPage() {
           </div>
         </CardContent>
       </Card>
+      {/* UploadButton-Test-Card */}
+      <UploadButtonTestCardWithTimeout />
     </main>
   );
 }

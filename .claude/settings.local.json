@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(npm run dev:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run build:*)",
+      "Bash(npx prisma migrate resolve:*)",
+      "Bash(npx prisma migrate dev:*)",
+      "Bash(npx prisma:*)"
+    ],
+    "deny": []
+  }
+}
