@@ -38,9 +38,6 @@ const ChatIdPage = async ({
     redirect("/app");
   }
 
-  // debug logs
-  console.log("Chat ID:", chatId);
-  console.log("Common Chat:", commonChat);
 
   const isReady = true;
 

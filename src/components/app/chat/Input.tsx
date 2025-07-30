@@ -8,14 +8,17 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { useToastWithSound } from "@/lib/toast/toast-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { title } from "process";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMemo } from "react";
 import io from "socket.io-client";
 import { useForm } from "react-hook-form";
 import z from "zod";
+import { UploadButton } from "@/lib/uploadthing";
+import { X, FileIcon } from "lucide-react";
+import Image from "next/image";
 
 const formSchema = z.object({
-  content: z.string().min(1),
+  content: z.string(),
 });
 
 interface ChatInputProps {
@@ -30,6 +33,14 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
     const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL!;
     return io(url);
   }, []);
+
+  // File upload state
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<{
+    url: string;
+    name: string;
+    type: 'image' | 'file';
+  } | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,15 +67,29 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     if (isLoading) return;
 
-    console.log("Sending message:", data);
 
-    // Nachricht über Socket senden
-    socket.emit("message", {
+    // Prepare message data
+    const messageData: any = {
       chatId,
-      senderId: senderId, // <-- MUSS eine User-ID sein!
-      content: data.content,
-    });
+      senderId: senderId,
+      content: data.content || "", // Allow empty content if file is attached
+    };
+
+    // Add file data if attached
+    if (attachedFile) {
+      messageData.fileUrl = attachedFile.url;
+      messageData.fileName = attachedFile.name;
+    }
+
+    // Don't send if both content and file are empty
+    if (!data.content.trim() && !attachedFile) return;
+
+    // Send message via Socket
+    socket.emit("message", messageData);
+    
+    // Reset form and attached file
     form.resetField("content");
+    setAttachedFile(null);
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -82,6 +107,47 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+        {/* File Preview */}
+        {attachedFile && (
+          <div className="mb-3 p-3 bg-slate-800/50 border border-slate-700/50 rounded-xl">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0">
+                {attachedFile.type === 'image' ? (
+                  <div className="relative w-12 h-12 rounded-lg overflow-hidden">
+                    <Image
+                      src={attachedFile.url}
+                      alt={attachedFile.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div className="w-12 h-12 bg-slate-700 rounded-lg flex items-center justify-center">
+                    <FileIcon size={20} className="text-slate-400" />
+                  </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-slate-200 truncate">
+                  {attachedFile.name}
+                </div>
+                <div className="text-xs text-slate-400">
+                  {attachedFile.type === 'image' ? 'Image' : 'File'} attached
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAttachedFile(null)}
+                className="p-1 hover:bg-slate-700 rounded-full transition-colors"
+                title="Remove attachment"
+              >
+                <X size={16} className="text-slate-400" />
+              </button>
+            </div>
+          </div>
+        )}
+        
         <FormField
           control={form.control}
           name="content"
@@ -89,22 +155,50 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
             <FormItem>
               <FormControl>
                 <div className="relative flex items-end bg-slate-900/60 border border-slate-800/50 rounded-2xl shadow-xl backdrop-blur-xl px-4 py-3 gap-3">
-                  {/* Fileupload Button */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      console.log('Fileupload not implemented yet');
-                      toast.info("File upload feature is not implemented yet.")
-
-                    }}
-                    className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 shadow-lg border-4 border-slate-900/80 hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    aria-label="Upload file"
-                  >
-                    {/* Paperclip Icon */}
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-white">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6.5v7a4.5 4.5 0 11-9 0v-7a3.5 3.5 0 117 0v7a2.5 2.5 0 11-5 0v-7" />
-                    </svg>
-                  </button>
+                  {/* Custom Styled File Upload Button */}
+                  <div className="relative">
+                    <UploadButton
+                      endpoint="messageFile"
+                      onUploadBegin={() => {
+                        setIsUploadOpen(true);
+                      }}
+                      onClientUploadComplete={(res) => {
+                        const fileUrl = res?.[0]?.ufsUrl || res?.[0]?.url;
+                        const fileName = res?.[0]?.name;
+                        if (fileUrl && fileName) {
+                          // Determine file type
+                          const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName);
+                          
+                          // Attach file instead of auto-sending
+                          setAttachedFile({
+                            url: fileUrl,
+                            name: fileName,
+                            type: isImage ? 'image' : 'file'
+                          });
+                          
+                          toast.success("File attached! Add a message or press Enter to send.");
+                        }
+                        setIsUploadOpen(false);
+                      }}
+                      onUploadError={(error) => {
+                        console.error("Upload error:", error);
+                        toast.error("Upload failed. Please try again.");
+                        setIsUploadOpen(false);
+                      }}
+                      appearance={{
+                        button: "h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 shadow-lg border-4 border-slate-900/80 hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-blue-400 ut-uploading:animate-pulse",
+                        allowedContent: "hidden",
+                        container: "w-10 h-10",
+                      }}
+                      content={{
+                        button: (
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-white">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6.5v7a4.5 4.5 0 11-9 0v-7a3.5 3.5 0 117 0v7a2.5 2.5 0 11-5 0v-7" />
+                          </svg>
+                        ),
+                      }}
+                    />
+                  </div>
                   {/* Textarea */}
                   <textarea
                     {...field}

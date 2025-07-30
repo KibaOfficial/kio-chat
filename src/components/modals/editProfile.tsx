@@ -13,7 +13,10 @@ import UserAvatar from "../app/user-avatar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { UploadButton } from "@/lib/uploadthing";
+import { useToastWithSound } from "@/lib/toast/toast-wrapper";
+import { X, Upload } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").optional().or(z.literal("")),
@@ -28,7 +31,9 @@ export const EditProfileModal = () => {
   
   // Use user from modal data, fallback to empty
   const user: Partial<User> = (data && 'user' in data && (data as any).user) ? (data as any).user : { name: "", email: "", image: "" };
-  const [avatarUrl, setAvatarUrl] = useState(user.image);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined | null>(user.image);
+  const [isUploading, setIsUploading] = useState(false);
+  const { toast } = useToastWithSound();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -39,6 +44,19 @@ export const EditProfileModal = () => {
       password: "",
     },
   });
+
+  // Update form and avatar when modal opens with new user data
+  useEffect(() => {
+    if (isModalOpen && user) {
+      setAvatarUrl(user.image);
+      form.reset({
+        name: user.name || "",
+        email: user.email || "",
+        image: user.image || "",
+        password: "",
+      });
+    }
+  }, [isModalOpen, user.id, user.image, user.name, user.email]); // Remove form from dependencies
 
   const isLoading = form.formState.isSubmitting;
 
@@ -101,30 +119,61 @@ export const EditProfileModal = () => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            <div className="flex flex-col items-center gap-2 mb-4">
-              <UserAvatar src={avatarUrl} className="w-20 h-20 border-2 border-blue-400" />
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-300">Avatar URL (optional)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="url"
-                        placeholder="Avatar URL (optional)"
-                        className="bg-slate-900 border border-slate-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/60 rounded-lg mt-1"
-                        {...field}
-                        onChange={e => {
-                          field.onChange(e);
-                          setAvatarUrl(e.target.value);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+            <div className="flex flex-col items-center gap-4 mb-6">
+              <div className="relative group">
+                <UserAvatar src={avatarUrl} className="w-24 h-24 border-4 border-blue-400/50" />
+                {avatarUrl && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAvatarUrl("");
+                      form.setValue("image", "");
+                    }}
+                    className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition-colors"
+                    title="Remove avatar"
+                  >
+                    <X size={16} />
+                  </button>
                 )}
-              />
+              </div>
+              
+              <div className="flex flex-col items-center gap-2">
+                <UploadButton
+                  endpoint="profileImage"
+                  onUploadBegin={() => {
+                    setIsUploading(true);
+                  }}
+                  onClientUploadComplete={(res) => {
+                    const fileUrl = res?.[0]?.ufsUrl || res?.[0]?.url;
+                    if (fileUrl) {
+                      setAvatarUrl(fileUrl);
+                      form.setValue("image", fileUrl);
+                      toast.success("Profile image uploaded successfully!");
+                    }
+                    setIsUploading(false);
+                  }}
+                  onUploadError={(error) => {
+                    console.error("Upload error:", error);
+                    toast.error("Upload failed. Please try again.");
+                    setIsUploading(false);
+                  }}
+                  appearance={{
+                    button: "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-lg transition-all hover:scale-105 shadow-lg ut-uploading:animate-pulse",
+                    allowedContent: "text-xs text-slate-400 mt-1",
+                  }}
+                  content={{
+                    button: (
+                      <div className="flex items-center gap-2">
+                        <Upload size={16} />
+                        {isUploading ? "Uploading..." : "Upload Avatar"}
+                      </div>
+                    ),
+                  }}
+                />
+                <p className="text-xs text-slate-500 text-center">
+                  Upload a profile image or leave empty for default avatar
+                </p>
+              </div>
             </div>
             
             <FormField
