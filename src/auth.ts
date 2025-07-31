@@ -40,7 +40,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/auth",
+    error: "/auth", // Redirect OAuth errors back to auth page
+  },
   callbacks: {
+    async signIn({ user, account }) {
+      // For OAuth providers (Discord), check if user is approved
+      if (account?.provider === "discord") {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { approved: true }
+        });
+        
+        if (dbUser && !dbUser.approved) {
+          // Return false to prevent sign in - NextAuth will redirect to error page
+          return false;
+        }
+      }
+      
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) token.id = user.id;
       return token;
