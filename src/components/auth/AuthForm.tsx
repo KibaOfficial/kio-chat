@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
@@ -15,6 +15,23 @@ import OAuthButton from "@/components/auth/OAuthButton";
 const AuthForm = () => {
   const [authMode, setAuthMode] = useState<"login" | "register">("login");
   const [submitMessage, setSubmitMessage] = useState<string>("");
+
+  // Check for OAuth errors in URL params
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get("error");
+      if (error) {
+        if (error === "AccessDenied") {
+          toast.error("Dein Account wurde noch nicht freigeschaltet. Bitte warte auf die Freigabe durch einen Admin.");
+          setSubmitMessage("OAuth login failed: Account not approved yet.");
+        } else {
+          toast.error("OAuth login failed. Please try again.");
+          setSubmitMessage("OAuth login failed.");
+        }
+      }
+    }
+  }, []);
 
   const loginForm = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),

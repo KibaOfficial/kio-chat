@@ -44,3 +44,6 @@ next-env.d.ts
 # private stuff
 bak/
 .vercel
+
+# Claude development guidelines (local only)
+CLAUDE.md
