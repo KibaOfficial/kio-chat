@@ -9,8 +9,7 @@ import { useToastWithSound } from "@/lib/toast/toast-wrapper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { title } from "process";
 import { useEffect, useRef, useState } from "react";
-import { useMemo } from "react";
-import io from "socket.io-client";
+import { useSocket } from "@/components/hooks/useSocket";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { UploadButton } from "@/lib/uploadthing";
@@ -25,14 +24,12 @@ interface ChatInputProps {
   userName: string;
   chatId: string;
   senderId: string; // User ID of the sender, required for message sending
+  currentUser: { id: string; name?: string; image?: string };
 }
 
-export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
-  // Socket.IO-Client initialisieren (Memoized, damit nicht bei jedem Render neu)
-  const socket = useMemo(() => {
-    const url = process.env.NEXT_PUBLIC_WEBSOCKET_URL!;
-    return io(url);
-  }, []);
+export const ChatInput = ({ userName, chatId, senderId, currentUser }: ChatInputProps) => {
+  // Use socket hook for typing indicators and online status
+  const { sendMessage, startTyping, stopTyping } = useSocket(chatId, currentUser);
 
   // File upload state
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -84,8 +81,8 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
     // Don't send if both content and file are empty
     if (!data.content.trim() && !attachedFile) return;
 
-    // Send message via Socket
-    socket.emit("message", messageData);
+    // Send message via Socket (also stops typing)
+    sendMessage(messageData);
     
     // Reset form and attached file
     form.resetField("content");
@@ -100,6 +97,17 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
       }
     }
     // Shift+Enter lässt das normale Verhalten zu (neue Zeile)
+  };
+
+  const handleInputChange = (value: string, onChange: (value: string) => void) => {
+    onChange(value);
+    
+    // Start typing indicator when user types
+    if (value.trim()) {
+      startTyping();
+    } else {
+      stopTyping();
+    }
   };
 
   const { toast } = useToastWithSound();
@@ -208,8 +216,11 @@ export const ChatInput = ({ userName, chatId, senderId }: ChatInputProps) => {
                     placeholder={`Message @${userName}...`}
                     className="flex-1 resize-none bg-transparent text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-xl px-4 py-2 text-base max-h-40 min-h-[40px]"
                     disabled={isLoading}
-                    onInput={field.onChange}
-                    onBlur={field.onBlur}
+                    onInput={(e) => handleInputChange((e.target as HTMLTextAreaElement).value, field.onChange)}
+                    onBlur={(e) => {
+                      field.onBlur();
+                      stopTyping();
+                    }}
                     onKeyDown={handleKeyDown}
                     value={field.value}
                   />
