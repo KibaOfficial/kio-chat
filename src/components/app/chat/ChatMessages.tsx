@@ -5,6 +5,8 @@
 
 "use client"
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useSocket } from "@/components/hooks/useSocket";
+import { TypingIndicator } from "./TypingIndicator";
 import io from "socket.io-client";
 import qs from "query-string";
 import ReactMarkdown from "react-markdown";
@@ -19,7 +21,7 @@ interface ChatMessagesProps {
   name: string;
   chatId: string;
   currentUserId: string;
-  currentUser?: any; // Current user data for the modal
+  currentUser: { id: string; name?: string; image?: string };
 }
 
 // Helper function to determine if URL or fileName is an image
@@ -51,8 +53,10 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const chatRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const socketRef = useRef<any>(null);
   const { onOpen } = useModal();
+  
+  // Use socket hook for typing indicators and receive messages
+  const { typingUsers, onlineUsers } = useSocket(chatId, currentUser);
 
   // Handle avatar click to open user card modal
   const handleAvatarClick = (user: any) => {
@@ -111,10 +115,9 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
     }
   }, [cursor, hasMore, loading, fetchMessages]);
 
-  // Socket.io for live updates
+  // Socket.io for live message updates (separate from typing indicators)
   useEffect(() => {
     const socket = io("https://kiochatws.kibaofficial.net");
-    socketRef.current = socket;
     socket.emit("join", chatId);
     socket.on("message", (msg: any) => {
       setMessages((prev) => {
@@ -161,6 +164,8 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
                 <UserAvatar 
                   src={messageUser.image} 
                   className="h-8 w-8"
+                  showOnlineStatus={true}
+                  isOnline={onlineUsers.some(user => user.userId === messageUser.id)}
                 />
               </div>
               
@@ -315,6 +320,9 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
         })}
         {loading && <div className="text-center text-slate-400 py-2">Loading...</div>}
         {!hasMore && <div className="text-center text-slate-500 py-2 text-xs">No more messages</div>}
+        
+        {/* Typing Indicator */}
+        <TypingIndicator typingUsers={typingUsers} />
       </div>
       <div ref={bottomRef} />
     </div>

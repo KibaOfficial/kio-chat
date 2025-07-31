@@ -9,13 +9,17 @@ import Link from "next/link";
 interface ChatHeaderProps {
   name: string;
   lastOnline?: string;
-  image: string;
+  image?: string;
+  isOnline?: boolean;
+  userId?: string;
 }
 
 export const ChatHeader = ({
   name,
   lastOnline,
-  image
+  image,
+  isOnline = false,
+  userId
 }: ChatHeaderProps) => {
   return (
     <div className="h-16 flex items-center gap-3 px-6 py-4 border-b border-slate-800/50 bg-gradient-to-r from-slate-900/80 to-slate-800/50">
@@ -27,6 +31,8 @@ export const ChatHeader = ({
       <UserAvatar
         src={image}
         className="w-8 h-8 rounded-full shadow-lg border-2 border-slate-800/60"
+        showOnlineStatus={true}
+        isOnline={isOnline}
       />
       <h2 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent ml-2">
         {name}

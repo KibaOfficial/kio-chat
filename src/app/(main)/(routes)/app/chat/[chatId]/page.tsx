@@ -3,9 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { ChatHeader } from "@/components/app/chat/ChatHeader";
-import { ChatMessages } from "@/components/app/chat/ChatMessages";
-import { ChatInput } from "@/components/app/chat/Input";
+import { ChatContainer } from "@/components/app/chat/ChatContainer";
 import ChatSidebarWrapper from "@/components/app/ChatSidebarWrapper";
 import { getChatById } from "@/lib/chat/chatUtils";
 import { getCurrentUser } from "@/lib/user/current-profile";
@@ -57,30 +55,15 @@ const ChatIdPage = async ({
       </div>
       
       {/* Chat Content */}
-      <div className="flex-1 flex flex-col shadow-2xl border border-slate-800/50 bg-slate-900/60 backdrop-blur-xl overflow-hidden">
-        {/* Chat Header */}
-        <ChatHeader 
-          name={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
-          lastOnline="Just now"
-          image={commonChat.users.find(u => u.user.id !== user.id)?.user.image || ""}
-        />
-        
-        {/* Chat Messages */}
-        <ChatMessages
-          name={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
-          chatId={chatId}
-          currentUserId={user.id}
-        />
-        
-        {/* Chat Input */}
-        <div className="px-2 pb-2">
-          <ChatInput
-            chatId={chatId}
-            userName={commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User"}
-            senderId={user.id}
-          />
-        </div>
-      </div>
+      <ChatContainer
+        chatId={chatId}
+        currentUser={{ id: user.id, name: user.name || undefined, image: user.image || undefined }}
+        otherUser={{
+          id: commonChat.users.find(u => u.user.id !== user.id)?.user.id || "",
+          name: commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User",
+          image: commonChat.users.find(u => u.user.id !== user.id)?.user.image || undefined
+        }}
+      />
     </div>
   );
 }
