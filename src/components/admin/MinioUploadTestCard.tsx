@@ -67,7 +67,12 @@ export function MinioUploadTestCard() {
 
   const getDownloadUrl = (bucketName: string, fileName: string): string => {
     if (bucketName === 'kio-profile-images') {
-      return `http://localhost:9000/${bucketName}/${fileName}`;
+      const minioUrl = process.env.NEXT_PUBLIC_MINIO_URL;
+      if (!minioUrl) {
+        console.warn('NEXT_PUBLIC_MINIO_URL not set, falling back to API download');
+        return `/api/storage/download?bucket=${encodeURIComponent(bucketName)}&file=${encodeURIComponent(fileName)}`;
+      }
+      return `${minioUrl}/${bucketName}/${fileName}`;
     } else {
       return `/api/storage/download?bucket=${encodeURIComponent(bucketName)}&file=${encodeURIComponent(fileName)}`;
     }
@@ -220,11 +225,9 @@ export function MinioUploadTestCard() {
           </div>
         )}
 
-        {/* Debug Info */}
+        {/* Storage Info */}
         <div className="text-xs text-gray-500 border-t pt-3 space-y-1">
-          <div className="font-medium">MinIO Configuration:</div>
-          <div>API Endpoint: http://localhost:9000</div>
-          <div>Console: http://localhost:9001</div>
+          <div className="font-medium">Storage Configuration:</div>
           <div>Profile Images: Public bucket (direct access)</div>
           <div>Chat Files: Private bucket (API access only)</div>
         </div>

@@ -12,7 +12,8 @@ import {
   getFileUrl, 
   ensureBucketExists,
   getProfileImagePath,
-  getChatFilePath
+  getChatFilePath,
+  hasPermissionToDelete
 } from '@/lib/storage/s3Client';
 import { 
   StorageUploadResponse, 
@@ -184,7 +185,15 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json(errorResponse, { status: 400 });
     }
 
-    // TODO: Add permission check - users should only delete their own files
+    // Permission check - users should only delete their own files
+    const hasPermission = await hasPermissionToDelete(session.user.id, bucket, fileName);
+    if (!hasPermission) {
+      const errorResponse: StorageErrorResponse = {
+        success: false,
+        error: 'Forbidden: You do not have permission to delete this file'
+      };
+      return NextResponse.json(errorResponse, { status: 403 });
+    }
     
     // Delete from MinIO
     await minioClient.removeObject(bucket, fileName);

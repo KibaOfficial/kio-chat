@@ -6,7 +6,7 @@
 "use client";
 
 import { useState } from 'react';
-import { StorageResponse, StorageUploadResponse } from '@/app/api/storage/types';
+import { StorageResponse, StorageUploadResponse, StorageErrorResponse, StorageDeleteResponse } from '@/app/api/storage/types';
 
 interface UseMinioStorageProps {
   onUploadComplete?: (response: StorageUploadResponse) => void;
@@ -38,7 +38,8 @@ export const useMinioStorage = ({ onUploadComplete, onError }: UseMinioStoragePr
       const result: StorageResponse = await response.json();
 
       if (!result.success) {
-        throw new Error(result.error);
+        const errorResult = result as StorageErrorResponse;
+        throw new Error(errorResult.error);
       }
 
       const uploadResponse = result as StorageUploadResponse;
@@ -64,10 +65,11 @@ export const useMinioStorage = ({ onUploadComplete, onError }: UseMinioStoragePr
         method: 'DELETE',
       });
 
-      const result = await response.json();
+      const result: StorageDeleteResponse | StorageErrorResponse = await response.json();
       
       if (!result.success) {
-        throw new Error(result.error);
+        const errorResult = result as StorageErrorResponse;
+        throw new Error(errorResult.error);
       }
 
       return true;
@@ -86,7 +88,10 @@ export const useMinioStorage = ({ onUploadComplete, onError }: UseMinioStoragePr
 
   const getPublicUrl = (bucket: string, fileName: string): string => {
     // For public buckets (like profile images), return direct MinIO URL
-    const baseUrl = process.env.NEXT_PUBLIC_MINIO_URL || 'http://localhost:9000';
+    const baseUrl = process.env.NEXT_PUBLIC_MINIO_URL;
+    if (!baseUrl) {
+      throw new Error('NEXT_PUBLIC_MINIO_URL environment variable is not set');
+    }
     return `${baseUrl}/${bucket}/${fileName}`;
   };
 

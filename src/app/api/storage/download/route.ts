@@ -5,7 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
-import { minioClient, BUCKETS } from '@/lib/storage/s3Client';
+import { minioClient, BUCKETS, hasPermissionToDownload } from '@/lib/storage/s3Client';
 
 // GET /api/storage/download?bucket=bucket&file=filename
 export async function GET(request: NextRequest) {
@@ -38,7 +38,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: Add permission check - users should only access files they have permission to view
+    // Permission check - users should only access files they have permission to view
+    const hasPermission = await hasPermissionToDownload(session.user.id, bucket, fileName);
+    if (!hasPermission) {
+      return NextResponse.json(
+        { error: 'Forbidden: You do not have permission to access this file' },
+        { status: 403 }
+      );
+    }
 
     try {
       // Get file from MinIO
