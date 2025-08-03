@@ -4,12 +4,10 @@
 // https://opensource.org/licenses/MIT
 
 import nodemailer from "nodemailer";
-import { ImapFlow } from "imapflow";
 
 export const sendVerificationEmail = async (
   email: string,
-  token: string,
-  name?: string
+  token: string
 ): Promise<void> => {
   try {
     const transporter = nodemailer.createTransport({
@@ -33,7 +31,7 @@ export const sendVerificationEmail = async (
       subject: "Confirm your email",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #333;">Welcome to Kio-Chat${name ? `, ${name}` : ''}!</h1>
+          <h1 style="color: #333;">Welcome to Kio-Chat!</h1>
           <p>Thank you for registering. Please confirm your email address by clicking the button below:</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="${confirmLink}" 
@@ -61,92 +59,8 @@ export const sendVerificationEmail = async (
     const info = await transporter.sendMail(mail);
     console.log("Verification email sent successfully:", info.messageId);
     
-    // Save sent email to IMAP Sent folder
-    await saveSentEmailToIMAP(mail, info.messageId);
-    
   } catch (error) {
     console.error("Error sending verification email:", error);
     throw new Error(`Failed to send verification email: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
-const saveSentEmailToIMAP = async (mailOptions: any, messageId: string): Promise<void> => {
-  try {
-    const client = new ImapFlow({
-      host: process.env.EMAIL_HOST || '',
-      port: parseInt(process.env.EMAIL_IMAP_PORT || "993"),
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER || '',
-        pass: process.env.EMAIL_PASS || '',
-      },
-      logger: false, // Disable logging for production
-    });
-
-    await client.connect();
-
-    // Create the email message in RFC822 format
-    const date = new Date().toUTCString();
-    const rfc822Message = [
-      `Message-ID: <${messageId}>`,
-      `Date: ${date}`,
-      `From: ${mailOptions.from}`,
-      `To: ${mailOptions.to}`,
-      `Subject: ${mailOptions.subject}`,
-      `MIME-Version: 1.0`,
-      `Content-Type: multipart/alternative; boundary="boundary123"`,
-      ``,
-      `--boundary123`,
-      `Content-Type: text/plain; charset=UTF-8`,
-      ``,
-      mailOptions.text,
-      ``,
-      `--boundary123`,
-      `Content-Type: text/html; charset=UTF-8`,
-      ``,
-      mailOptions.html,
-      ``,
-      `--boundary123--`,
-    ].join('\r\n');
-
-    // Append to Sent folder (try common sent folder names)
-    const sentFolders = ['Sent', 'INBOX.Sent', 'Sent Messages', 'Sent Items'];
-    let savedToSent = false;
-
-    for (const folderName of sentFolders) {
-      try {
-        // Try to select the folder to check if it exists
-        await client.mailboxOpen(folderName);
-        await client.append(folderName, rfc822Message, ['\\Seen']);
-        console.log(`Email saved to ${folderName} folder successfully`);
-        savedToSent = true;
-        break;
-      } catch (folderError) {
-        console.log(`Could not save to ${folderName}:`, folderError);
-        continue;
-      }
-    }
-
-    // If no standard sent folder found, try to create one
-    if (!savedToSent) {
-      try {
-        await client.mailboxCreate('Sent');
-        await client.append('Sent', rfc822Message, ['\\Seen']);
-        console.log('Created Sent folder and saved email');
-        savedToSent = true;
-      } catch (createError) {
-        console.log('Could not create Sent folder:', createError);
-      }
-    }
-
-    if (!savedToSent) {
-      console.warn('Could not save email to any Sent folder');
-    }
-
-    await client.logout();
-
-  } catch (error) {
-    console.error('Error saving sent email to IMAP:', error);
-    // Don't throw here - we don't want to fail the entire email send if IMAP save fails
-  }
-};
