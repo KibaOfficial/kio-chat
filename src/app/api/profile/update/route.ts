@@ -66,8 +66,8 @@ export async function PATCH(request: NextRequest) {
     // Always update name (it's required)
     updateData.name = name.trim();
     
-    // Handle description update (optional) - preserve empty strings
-    updateData.description = (description === undefined || description === null) ? null : description.trim();
+    // Handle description update (optional) - convert empty string to null for consistency
+    updateData.description = (description === undefined || description === null || (typeof description === "string" && description.trim() === "")) ? null : description.trim();
 
     // Handle image update (optional)
     if (image !== undefined) {
