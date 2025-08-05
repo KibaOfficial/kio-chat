@@ -141,7 +141,10 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
   }, [messages]);
 
   return (
-    <div className="flex-1 flex flex-col py-4 overflow-y-auto" ref={chatRef}>
+    <div 
+      className="flex-1 flex flex-col py-4 overflow-y-auto custom-scrollbar" 
+      ref={chatRef}
+    >
       {/* Chat Messages */}
       <div className="flex flex-col gap-3 px-2 pb-2 mt-auto">
         {messages.map((m, i) => {

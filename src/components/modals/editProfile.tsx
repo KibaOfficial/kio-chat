@@ -24,6 +24,7 @@ const formSchema = z.object({
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   image: z.string().url("Invalid image URL").optional().or(z.literal("")),
   password: z.string().min(6, "Password must be at least 6 characters").optional().or(z.literal("")),
+  description: z.string().max(200, "Description must be 200 characters or less").optional().or(z.literal("")),
 });
 
 export const EditProfileModal = () => {
@@ -58,6 +59,7 @@ export const EditProfileModal = () => {
       email: user.email || "",
       image: user.image || "",
       password: "",
+      description: user.description || "",
     },
   });
 
@@ -70,9 +72,10 @@ export const EditProfileModal = () => {
         email: user.email || "",
         image: user.image || "",
         password: "",
+        description: user.description || "",
       });
     }
-  }, [isModalOpen, user.id, user.image, user.name, user.email]); // Remove form from dependencies
+  }, [isModalOpen, user.id, user.image, user.name, user.email, user.description]); // Remove form from dependencies
 
   const isLoading = form.formState.isSubmitting;
 
@@ -93,10 +96,14 @@ export const EditProfileModal = () => {
         updateData.password = values.password;
       }
 
+      if (values.description !== undefined) {
+        updateData.description = values.description?.trim() || null;
+      }
+
       // Don't send email updates for now (usually requires verification)
       // TODO: implement email update flow or authentication by current password
 
-      const response = await fetch("/api/user", {
+      const response = await fetch("/api/profile/update", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -226,7 +233,7 @@ export const EditProfileModal = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-300">Name (optional)</FormLabel>
+                  <FormLabel className="text-slate-300">Username</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
@@ -236,6 +243,31 @@ export const EditProfileModal = () => {
                     />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-slate-300">About</FormLabel>
+                  <FormControl>
+                    <textarea
+                      placeholder="Tell others about yourself..."
+                      className="w-full bg-slate-900 border border-slate-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/60 rounded-lg mt-1 p-3 resize-none"
+                      rows={3}
+                      maxLength={200}
+                      {...field}
+                    />
+                  </FormControl>
+                  <div className="flex justify-between items-center mt-1">
+                    <FormMessage />
+                    <span className="text-xs text-slate-500">
+                      {field.value?.length || 0}/200
+                    </span>
+                  </div>
                 </FormItem>
               )}
             />

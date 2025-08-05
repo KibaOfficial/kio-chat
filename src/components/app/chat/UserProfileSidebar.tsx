@@ -12,6 +12,7 @@ interface UserProfileSidebarProps {
     id: string;
     name?: string;
     image?: string;
+    description?: string;
   };
   isVisible: boolean;
   onClose: () => void;
@@ -81,7 +82,7 @@ export const UserProfileSidebar = ({ user, isVisible, onClose }: UserProfileSide
             <div className="p-3 rounded-lg bg-slate-800/40 border border-slate-700/50">
               <h4 className="text-sm font-semibold text-slate-300 mb-1">About</h4>
               <p className="text-slate-400 text-sm">
-                No bio available
+                {user.description || "No bio available"}
               </p>
             </div>
 

@@ -82,7 +82,7 @@ export const UserCardModal = () => {
                 About Me
               </h4>
               <p className="text-slate-400 text-sm mb-3">
-                Description will be added soon...
+                {user.description || "No bio available"}
               </p>
 
               {/* Member Since */}
