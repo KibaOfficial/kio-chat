@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Send verification email
-    await sendVerificationEmail(user.email, token, user.name);
+    await sendVerificationEmail(user.email, token);
     console.log(`Verification email sent to ${user.email}`);
 
     const url = new URL("/admin", request.url);

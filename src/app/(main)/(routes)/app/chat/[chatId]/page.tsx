@@ -57,11 +57,17 @@ const ChatIdPage = async ({
       {/* Chat Content */}
       <ChatContainer
         chatId={chatId}
-        currentUser={{ id: user.id, name: user.name || undefined, image: user.image || undefined }}
+        currentUser={{ 
+          id: user.id, 
+          name: user.name || undefined, 
+          image: user.image || undefined,
+          description: user.description || undefined
+        }}
         otherUser={{
           id: commonChat.users.find(u => u.user.id !== user.id)?.user.id || "",
           name: commonChat.users.find(u => u.user.id !== user.id)?.user.name || "Unknown User",
-          image: commonChat.users.find(u => u.user.id !== user.id)?.user.image || undefined
+          image: commonChat.users.find(u => u.user.id !== user.id)?.user.image || undefined,
+          description: commonChat.users.find(u => u.user.id !== user.id)?.user.description || undefined
         }}
       />
     </div>

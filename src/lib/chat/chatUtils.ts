@@ -12,7 +12,14 @@ export async function getChats(userId: string) {
     include: {
       users: {
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              description: true,
+            },
+          },
         },
       },
       messages: {
@@ -35,6 +42,7 @@ export async function getChatById(chatId: string) {
               name: true,
               // email: true, // not needed now we're gonna display only username maybe in future or make it optional via profile settings
               image: true,
+              description: true,
             },
           }
         },
