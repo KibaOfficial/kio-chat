@@ -97,7 +97,7 @@ export const EditProfileModal = () => {
       }
 
       if (values.description !== undefined) {
-        updateData.description = values.description === "" ? null : values.description.trim();
+        updateData.description = values.description?.trim() || null;
       }
 
       // Don't send email updates for now (usually requires verification)

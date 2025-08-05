@@ -16,6 +16,13 @@ interface UserUpdateData {
   password?: string;
 }
 
+// Validation helper functions
+const isValidDescription = (description: unknown): boolean => {
+  if (description === undefined || description === null) return true;
+  if (typeof description !== "string") return false;
+  return description.trim().length <= 200;
+};
+
 export async function PATCH(request: NextRequest) {
   try {
     const session = await auth();
@@ -46,7 +53,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Validate description (optional)
-    if (description !== undefined && description !== null && typeof description === "string" && description.trim().length > 200) {
+    if (!isValidDescription(description)) {
       return NextResponse.json(
         { error: "Description must be 200 characters or less" },
         { status: 400 }
@@ -59,8 +66,8 @@ export async function PATCH(request: NextRequest) {
     // Always update name (it's required)
     updateData.name = name.trim();
     
-    // Handle description update (optional)
-    updateData.description = description?.trim() || null;
+    // Handle description update (optional) - preserve empty strings
+    updateData.description = (description === undefined || description === null) ? null : description.trim();
 
     // Handle image update (optional)
     if (image !== undefined) {
