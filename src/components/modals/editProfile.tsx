@@ -14,7 +14,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useState, useEffect } from "react";
-import { UploadButton } from "@/lib/uploadthing";
+// import { UploadButton } from "@/lib/uploadthing"; // Replaced with MinIO
+import { useProfileImageUpload } from "@/components/hooks/useMinioStorage";
 import { useToastWithSound } from "@/lib/toast/toast-wrapper";
 import { X, Upload } from "lucide-react";
 
@@ -32,8 +33,23 @@ export const EditProfileModal = () => {
   // Use user from modal data, fallback to empty
   const user: Partial<User> = (data && 'user' in data && (data as any).user) ? (data as any).user : { name: "", email: "", image: "" };
   const [avatarUrl, setAvatarUrl] = useState<string | undefined | null>(user.image);
-  const [isUploading, setIsUploading] = useState(false);
+  // const [isUploading, setIsUploading] = useState(false); // Old UploadThing state
   const { toast } = useToastWithSound();
+  
+  // MinIO profile image upload hook
+  const { uploadProfileImage, isUploading } = useProfileImageUpload({
+    onUploadComplete: (response) => {
+      if (response.url) {
+        setAvatarUrl(response.url);
+        form.setValue("image", response.url);
+        toast.success("Profile image uploaded successfully!");
+      }
+    },
+    onError: (error) => {
+      console.error("Upload error:", error);
+      toast.error("Upload failed. Please try again.");
+    }
+  });
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -138,6 +154,37 @@ export const EditProfileModal = () => {
               </div>
               
               <div className="flex flex-col items-center gap-2">
+                {/* MinIO Upload Button */}
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  className="hidden"
+                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      uploadProfileImage(file);
+                    }
+                  }}
+                  disabled={isUploading}
+                />
+                <label
+                  htmlFor="avatar-upload"
+                  className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-lg transition-all hover:scale-105 shadow-lg cursor-pointer ${
+                    isUploading ? 'animate-pulse opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Upload size={16} />
+                    {isUploading ? "Uploading..." : "Upload Avatar"}
+                  </div>
+                </label>
+                <p className="text-xs text-slate-500 text-center">
+                  Upload a profile image or leave empty for default avatar
+                </p>
+                
+                {/* Old UploadThing Implementation - Commented out */}
+                {/*
                 <UploadButton
                   endpoint="profileImage"
                   onUploadBegin={() => {
@@ -170,9 +217,7 @@ export const EditProfileModal = () => {
                     ),
                   }}
                 />
-                <p className="text-xs text-slate-500 text-center">
-                  Upload a profile image or leave empty for default avatar
-                </p>
+                */}
               </div>
             </div>
             

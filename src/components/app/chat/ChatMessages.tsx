@@ -193,61 +193,69 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
                 {(m.fileUrl || (m.content && m.content.includes('📎'))) && (
                   <div className="">
                     {m.fileUrl ? (
-                      // Has fileUrl - show properly
-                      isImageFile(m.fileUrl, m.fileName) ? (
-                        // Image Preview with Next.js Image
-                        <div className="relative group">
-                          <div className="relative rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
-                            <Image 
-                              src={m.fileUrl} 
-                              alt={m.fileName || "Uploaded image"}
-                              width={400}
-                              height={256}
-                              className="object-cover w-full h-auto max-h-64 rounded-lg"
-                              onClick={() => window.open(m.fileUrl, '_blank')}
-                              unoptimized // UploadThing URLs might need this
-                            />
+                      (() => {
+                        // Extrahiere den MinIO-Key aus der fileUrl
+                        let minioKey = m.fileUrl;
+                        try {
+                          const urlObj = new URL(m.fileUrl);
+                          const idx = urlObj.pathname.indexOf('/kio-chat-storage/');
+                          minioKey = idx >= 0 ? urlObj.pathname.substring(idx + '/kio-chat-storage/'.length) : urlObj.pathname.slice(1);
+                        } catch {
+                          const idx = m.fileUrl.indexOf('/kio-chat-storage/');
+                          minioKey = idx >= 0 ? m.fileUrl.substring(idx + '/kio-chat-storage/'.length) : m.fileUrl;
+                        }
+                        return isImageFile(m.fileUrl, m.fileName) ? (
+                          <div className="relative group">
+                            <div className="relative rounded-lg overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                              <Image 
+                                src={m.fileUrl} 
+                                alt={m.fileName || "Uploaded image"}
+                                width={400}
+                                height={256}
+                                className="object-cover w-full h-auto max-h-64 rounded-lg"
+                                onClick={() => window.open(`/api/storage/download?bucket=kio-chat-storage&file=${encodeURIComponent(minioKey)}`, '_blank')}
+                                unoptimized
+                              />
+                            </div>
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <a 
+                                href={`/api/storage/download?bucket=kio-chat-storage&file=${encodeURIComponent(minioKey)}`}
+                                download={m.fileName}
+                                className="bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                                title="Download image"
+                              >
+                                <Download size={16} />
+                              </a>
+                            </div>
                           </div>
-                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        ) : (
+                          <div className={`flex items-center gap-3 p-3 rounded-lg ${
+                            isOwn 
+                              ? 'bg-white/10 hover:bg-white/20' 
+                              : 'bg-slate-700/50 hover:bg-slate-700/70'
+                          } transition-colors cursor-pointer`}>
+                            <FileIcon size={24} className="text-blue-400 flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium truncate">
+                                {getFileName(m.fileUrl)}
+                              </div>
+                              <div className="text-xs opacity-70">
+                                Click to download
+                              </div>
+                            </div>
                             <a 
-                              href={m.fileUrl} 
-                              download={m.fileName}
-                              className="bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
-                              title="Download image"
+                              href={`/api/storage/download?bucket=kio-chat-storage&file=${encodeURIComponent(minioKey)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                              title="Open file"
                             >
                               <Download size={16} />
                             </a>
                           </div>
-                        </div>
-                      ) : (
-                        // File Download Link
-                        <div className={`flex items-center gap-3 p-3 rounded-lg ${
-                          isOwn 
-                            ? 'bg-white/10 hover:bg-white/20' 
-                            : 'bg-slate-700/50 hover:bg-slate-700/70'
-                        } transition-colors cursor-pointer`}>
-                          <FileIcon size={24} className="text-blue-400 flex-shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium truncate">
-                              {getFileName(m.fileUrl)}
-                            </div>
-                            <div className="text-xs opacity-70">
-                              Click to download
-                            </div>
-                          </div>
-                          <a 
-                            href={m.fileUrl} 
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                            title="Open file"
-                          >
-                            <Download size={16} />
-                          </a>
-                        </div>
-                      )
+                        );
+                      })()
                     ) : (
-                      // No fileUrl but has 📎 - show placeholder
                       <div className={`flex items-center gap-3 p-3 rounded-lg ${
                         isOwn 
                           ? 'bg-white/10' 
