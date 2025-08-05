@@ -12,7 +12,8 @@ import { useEffect, useRef, useState } from "react";
 import { useSocket } from "@/components/hooks/useSocket";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { UploadButton } from "@/lib/uploadthing";
+// import { UploadButton } from "@/lib/uploadthing"; // Replaced with MinIO
+import { useChatFileUpload } from "@/components/hooks/useMinioStorage";
 import { X, FileIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -32,7 +33,28 @@ export const ChatInput = ({ userName, chatId, senderId, currentUser }: ChatInput
   const { sendMessage, startTyping, stopTyping } = useSocket(chatId, currentUser);
 
   // File upload state
-  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  // const [isUploadOpen, setIsUploadOpen] = useState(false); // Old UploadThing state
+  
+  // MinIO file upload hook
+  const { uploadChatFile, isUploading } = useChatFileUpload({
+    onUploadComplete: (response) => {
+      // Determine file type
+      const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(response.fileName);
+      
+      // Attach file instead of auto-sending
+      setAttachedFile({
+        url: response.url || '',
+        name: response.originalName || response.fileName,
+        type: isImage ? 'image' : 'file'
+      });
+      
+      toast.success("File attached! Add a message or press Enter to send.");
+    },
+    onError: (error) => {
+      console.error("Upload error:", error);
+      toast.error("Upload failed. Please try again.");
+    }
+  });
   const [attachedFile, setAttachedFile] = useState<{
     url: string;
     name: string;
@@ -163,7 +185,36 @@ export const ChatInput = ({ userName, chatId, senderId, currentUser }: ChatInput
             <FormItem>
               <FormControl>
                 <div className="relative flex items-end bg-slate-900/60 border border-slate-800/50 rounded-2xl shadow-xl backdrop-blur-xl px-4 py-3 gap-3">
-                  {/* Custom Styled File Upload Button */}
+                  {/* Custom Styled File Upload Button - MinIO */}
+                  <div className="relative">
+                    <input
+                      type="file"
+                      id="file-upload"
+                      className="hidden"
+                      accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,application/pdf"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          uploadChatFile(file);
+                        }
+                      }}
+                      disabled={isUploading}
+                    />
+                    <label
+                      htmlFor="file-upload"
+                      className={`h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 shadow-lg border-4 border-slate-900/80 hover:scale-105 transition-transform cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                        isUploading ? 'animate-pulse opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      title="Upload file"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5 text-white">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 6.5v7a4.5 4.5 0 11-9 0v-7a3.5 3.5 0 117 0v7a2.5 2.5 0 11-5 0v-7" />
+                      </svg>
+                    </label>
+                  </div>
+                  
+                  {/* Old UploadThing Implementation - Commented out */}
+                  {/*
                   <div className="relative">
                     <UploadButton
                       endpoint="messageFile"
@@ -207,6 +258,7 @@ export const ChatInput = ({ userName, chatId, senderId, currentUser }: ChatInput
                       }}
                     />
                   </div>
+                  */}
                   {/* Textarea */}
                   <textarea
                     {...field}

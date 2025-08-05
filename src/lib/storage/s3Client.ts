@@ -28,10 +28,20 @@ export const minioClient = new Minio.Client({
   secretKey: process.env.MINIO_SECRET_KEY!,
 });
 
+// Bucket Configuration 
+export const STORAGE_CONFIG = {
+  BUCKET: 'kio-chat-storage',
+  PATHS: {
+    AVATARS: 'avatars/',
+    GROUP_IMAGES: 'group-images/', 
+    ATTACHMENTS: 'attachments/',
+  }
+} as const;
+
 // Bucket Configuration
 export const BUCKETS = {
-  CHAT_FILES: 'kio-chat-files',
-  PROFILE_IMAGES: 'kio-profile-images',
+  CHAT_FILES: 'kio-chat-storage',
+  PROFILE_IMAGES: 'kio-chat-storage',
 } as const;
 
 export type BucketName = typeof BUCKETS[keyof typeof BUCKETS];
@@ -59,17 +69,15 @@ export const ensureBucketExists = async (bucketName: string): Promise<void> => {
 
 // File path generators
 export const getProfileImagePath = (fileName: string): string => {
-  return `avatars/${fileName}`;
+  return `${STORAGE_CONFIG.PATHS.AVATARS}${fileName}`;  // avatars/filename.jpg
 };
 
 export const getChatFilePath = (fileName: string, mimeType: string): string => {
-  if (mimeType.startsWith('image/')) {
-    return `messages/images/${fileName}`;
-  } else if (mimeType === 'application/pdf') {
-    return `messages/documents/${fileName}`;
-  } else {
-    return `messages/other/${fileName}`;
-  }
+  return `${STORAGE_CONFIG.PATHS.ATTACHMENTS}${fileName}`;  // attachments/filename.pdf
+};
+
+export const getGroupImagePath = (fileName: string): string => {
+  return `${STORAGE_CONFIG.PATHS.GROUP_IMAGES}${fileName}`;  // group-images/filename.jpg
 };
 
 // Permission checking functions

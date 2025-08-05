@@ -133,10 +133,8 @@ export async function POST(request: NextRequest) {
       bucketName,
     };
 
-    // Add public URL for profile images
-    if (uploadType === 'profile') {
-      response.url = getFileUrl(bucketName, filePath);
-    }
+    // Add public URL for all uploads
+    response.url = getFileUrl(bucketName, filePath);
 
     return NextResponse.json(response);
 
