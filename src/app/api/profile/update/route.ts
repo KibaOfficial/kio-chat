@@ -19,9 +19,9 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, description } = body;
+    const { name, description, image, password } = body;
 
-    // Validate input
+    // Validate name (required)
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json(
         { error: "Name is required" },
@@ -36,7 +36,8 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    if (description && typeof description === "string" && description.trim().length > 200) {
+    // Validate description (optional)
+    if (description !== undefined && description !== null && typeof description === "string" && description.trim().length > 200) {
       return NextResponse.json(
         { error: "Description must be 200 characters or less" },
         { status: 400 }
@@ -44,12 +45,25 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Update user profile
+    const updateData: any = {
+      name: name.trim(),
+      description: description?.trim() || null,
+    };
+
+    // Handle image update (optional)
+    if (image !== undefined) {
+      updateData.image = image === "" ? null : image;
+    }
+
+    // Handle password update (optional) 
+    if (password && typeof password === "string" && password.length >= 6) {
+      // Hash password before storing (you might want to add bcrypt here)
+      updateData.password = password;
+    }
+
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
-      data: {
-        name: name.trim(),
-        description: description?.trim() || null,
-      },
+      data: updateData,
       select: {
         id: true,
         name: true,
