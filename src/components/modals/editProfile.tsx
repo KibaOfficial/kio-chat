@@ -75,7 +75,7 @@ export const EditProfileModal = () => {
         description: user.description || "",
       });
     }
-  }, [isModalOpen, user.id, user.image, user.name, user.email]); // Remove form from dependencies
+  }, [isModalOpen, user.id, user.image, user.name, user.email, user.description]); // Remove form from dependencies
 
   const isLoading = form.formState.isSubmitting;
 
