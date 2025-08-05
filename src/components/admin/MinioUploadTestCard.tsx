@@ -66,14 +66,11 @@ export function MinioUploadTestCard() {
   };
 
   const getDownloadUrl = (bucketName: string, fileName: string): string => {
-    if (bucketName === 'kio-profile-images') {
-      const minioUrl = process.env.NEXT_PUBLIC_MINIO_URL;
-      if (!minioUrl) {
-        console.warn('NEXT_PUBLIC_MINIO_URL not set, falling back to API download');
-        return `/api/storage/download?bucket=${encodeURIComponent(bucketName)}&file=${encodeURIComponent(fileName)}`;
-      }
+    const minioUrl = process.env.NEXT_PUBLIC_MINIO_URL;
+    if (minioUrl) {
       return `${minioUrl}/${bucketName}/${fileName}`;
     } else {
+      console.warn('NEXT_PUBLIC_MINIO_URL not set, falling back to API download');
       return `/api/storage/download?bucket=${encodeURIComponent(bucketName)}&file=${encodeURIComponent(fileName)}`;
     }
   };

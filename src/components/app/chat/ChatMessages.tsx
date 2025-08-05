@@ -194,7 +194,7 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
                   <div className="">
                     {m.fileUrl ? (
                       (() => {
-                        // Extrahiere den MinIO-Key aus der fileUrl
+                        // Extract the MinIO key from the fileUrl
                         let minioKey = m.fileUrl;
                         try {
                           const urlObj = new URL(m.fileUrl);

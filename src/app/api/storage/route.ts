@@ -36,6 +36,9 @@ const validateFile = (file: File, type: 'profile' | 'chat'): string | null => {
     return `Invalid file type. Allowed: ${allowedTypes.join(', ')}`;
   }
 
+  // Note: MIME type validation is done here. For enhanced security,
+  // consider adding file content validation (magic number checks)
+  
   if (file.size > maxSize) {
     const sizeMB = Math.round(maxSize / (1024 * 1024));
     return `File too large. Maximum size: ${sizeMB}MB`;

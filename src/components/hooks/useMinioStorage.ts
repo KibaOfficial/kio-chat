@@ -8,6 +8,9 @@
 import { useState } from 'react';
 import { StorageResponse, StorageUploadResponse, StorageErrorResponse, StorageDeleteResponse } from '@/app/api/storage/types';
 
+// Client-side environment variable
+const MINIO_PUBLIC_URL = process.env.NEXT_PUBLIC_MINIO_URL;
+
 interface UseMinioStorageProps {
   onUploadComplete?: (response: StorageUploadResponse) => void;
   onError?: (error: string) => void;
@@ -88,11 +91,10 @@ export const useMinioStorage = ({ onUploadComplete, onError }: UseMinioStoragePr
 
   const getPublicUrl = (bucket: string, fileName: string): string => {
     // For public buckets (like profile images), return direct MinIO URL
-    const baseUrl = process.env.NEXT_PUBLIC_MINIO_URL;
-    if (!baseUrl) {
+    if (!MINIO_PUBLIC_URL) {
       throw new Error('NEXT_PUBLIC_MINIO_URL environment variable is not set');
     }
-    return `${baseUrl}/${bucket}/${fileName}`;
+    return `${MINIO_PUBLIC_URL}/${bucket}/${fileName}`;
   };
 
   return {

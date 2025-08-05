@@ -1,7 +1,16 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { auth } from "@/auth";
 
 export async function POST(request: Request) {
+  // Check admin authentication
+  const session = await auth();
+  const adminEmail = "kiba@kibaofficial.net";
+  
+  if (!session?.user?.email || session.user.email !== adminEmail) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
   const formData = await request.formData();
   const userId = formData.get("userId") as string;
   if (!userId) {

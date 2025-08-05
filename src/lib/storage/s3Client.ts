@@ -38,10 +38,10 @@ export const STORAGE_CONFIG = {
   }
 } as const;
 
-// Bucket Configuration
+// Simplified bucket configuration using the main bucket
 export const BUCKETS = {
-  CHAT_FILES: 'kio-chat-storage',
-  PROFILE_IMAGES: 'kio-chat-storage',
+  CHAT_FILES: STORAGE_CONFIG.BUCKET,
+  PROFILE_IMAGES: STORAGE_CONFIG.BUCKET,
 } as const;
 
 export type BucketName = typeof BUCKETS[keyof typeof BUCKETS];
