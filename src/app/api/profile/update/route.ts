@@ -6,6 +6,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import bcrypt from "bcryptjs";
+
+// Type for user update data
+interface UserUpdateData {
+  name?: string;
+  description?: string | null;
+  image?: string | null;
+  password?: string;
+}
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -45,10 +54,13 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Update user profile
-    const updateData: any = {
-      name: name.trim(),
-      description: description?.trim() || null,
-    };
+    const updateData: UserUpdateData = {};
+
+    // Always update name (it's required)
+    updateData.name = name.trim();
+    
+    // Handle description update (optional)
+    updateData.description = description?.trim() || null;
 
     // Handle image update (optional)
     if (image !== undefined) {
@@ -57,8 +69,9 @@ export async function PATCH(request: NextRequest) {
 
     // Handle password update (optional) 
     if (password && typeof password === "string" && password.length >= 6) {
-      // Hash password before storing (you might want to add bcrypt here)
-      updateData.password = password;
+      // Hash password securely before storing
+      const hashedPassword = await bcrypt.hash(password, 12);
+      updateData.password = hashedPassword;
     }
 
     const updatedUser = await prisma.user.update({
