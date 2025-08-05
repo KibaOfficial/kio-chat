@@ -6,7 +6,6 @@
 "use client"
 
 import UserAvatar from "../user-avatar";
-import { useState } from "react";
 
 interface UserProfileSidebarProps {
   user: {
@@ -17,6 +16,15 @@ interface UserProfileSidebarProps {
   isVisible: boolean;
   onClose: () => void;
 }
+
+// Helper function to generate safe username
+const generateUsername = (name?: string): string => {
+  if (!name) return 'unknown';
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, '') // Remove all non-alphanumeric characters
+    .substring(0, 15) || 'unknown'; // Limit length
+};
 
 export const UserProfileSidebar = ({ user, isVisible, onClose }: UserProfileSidebarProps) => {
   if (!isVisible) return null;
@@ -58,13 +66,13 @@ export const UserProfileSidebar = ({ user, isVisible, onClose }: UserProfileSide
           <div className="flex flex-col items-center text-center mb-6">
             <UserAvatar
               src={user.image}
-              className="w-16 h-16 lg:w-18 lg:h-18 rounded-full shadow-lg border-3 border-slate-800/60 mb-3"
+              className="w-16 h-16 lg:w-20 lg:h-20 rounded-full shadow-lg border-4 border-slate-800/60 mb-3"
             />
             <h3 className="text-lg lg:text-xl font-bold text-slate-200 mb-1">
               {user.name || "Unknown User"}
             </h3>
             <p className="text-xs lg:text-sm text-slate-400">
-              @{user.name?.toLowerCase().replace(/\s+/g, '') || 'unknown'}
+              @{generateUsername(user.name)}
             </p>
           </div>
 
@@ -93,7 +101,10 @@ export const UserProfileSidebar = ({ user, isVisible, onClose }: UserProfileSide
               <button className="w-full p-3 rounded-lg bg-slate-800/40 border border-slate-700/50 hover:bg-slate-700/40 transition-colors text-slate-300 text-sm">
                 Search Messages
               </button>
-              <button className="w-full p-3 rounded-lg bg-red-900/20 border border-red-700/50 hover:bg-red-800/30 transition-colors text-red-400 text-sm">
+              <button 
+                className="w-full p-3 rounded-lg bg-red-900/20 border border-red-700/50 hover:bg-red-800/30 transition-colors text-red-400 text-sm"
+                onClick={() => alert("Block User feature coming soon!")}
+              >
                 Block User
               </button>
             </div>
