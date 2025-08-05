@@ -299,7 +299,7 @@ export const EditProfileModal = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-slate-300">New Password</FormLabel>
+                  <FormLabel className="text-slate-300">New Password (optional)</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
