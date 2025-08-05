@@ -36,7 +36,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    if (description && typeof description === "string" && description.length > 200) {
+    if (description && typeof description === "string" && description.trim().length > 200) {
       return NextResponse.json(
         { error: "Description must be 200 characters or less" },
         { status: 400 }
