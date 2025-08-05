@@ -14,8 +14,8 @@ import { useState } from "react";
 
 interface ChatContainerProps {
   chatId: string;
-  currentUser: { id: string; name?: string; image?: string };
-  otherUser: { id: string; name?: string; image?: string };
+  currentUser: { id: string; name?: string; image?: string; description?: string };
+  otherUser: { id: string; name?: string; image?: string; description?: string };
 }
 
 export const ChatContainer = ({ chatId, currentUser, otherUser }: ChatContainerProps) => {
