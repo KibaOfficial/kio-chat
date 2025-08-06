@@ -110,21 +110,21 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
       {/* Background & UI Layout wie gehabt */}
-      <div className="relative z-10 w-full max-w-md">
-        <div className="bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl rounded-2xl p-8">
+      <div className="relative z-10 w-full max-w-xs sm:max-w-md">
+        <div className="bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl rounded-2xl p-4 sm:p-8">
           <Tabs value={authMode} onValueChange={handleTabChange} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-emerald-500/10 rounded-xl border border-accent/40 shadow-inner mb-6 overflow-visible">
+            <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-emerald-500/10 rounded-xl border border-accent/40 shadow-inner mb-4 sm:mb-6 overflow-visible">
               <TabsTrigger
                 value="login"
-                className="text-primary text-lg font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white transition-colors duration-300"
+                className="text-primary text-base sm:text-lg font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white transition-colors duration-300"
               >
                 Login
               </TabsTrigger>
               <TabsTrigger
                 value="register"
-                className="text-primary text-lg font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white transition-colors duration-300"
+                className="text-primary text-base sm:text-lg font-semibold data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500/30 data-[state=active]:to-purple-500/30 data-[state=active]:text-white transition-colors duration-300"
               >
                 Register
               </TabsTrigger>
@@ -133,15 +133,15 @@ const AuthForm = () => {
             {/* Login Tab */}
             <TabsContent value="login" className="mt-2">
               <div className="bg-gradient-to-br from-slate-800/80 via-slate-900/80 to-slate-800/90 border border-slate-700/50 shadow-xl rounded-xl">
-                <div className="p-8">
-                  <h2 className="text-3xl font-bold text-blue-400 mb-2 text-center">Sign in</h2>
-                  <p className="text-gray-400 text-center mb-6">Enter your email and password to access your account</p>
-                  <div className="flex flex-col space-y-4 mb-6">
+                <div className="p-4 sm:p-8">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-blue-400 mb-2 text-center">Sign in</h2>
+                  <p className="text-gray-400 text-center mb-4 sm:mb-6 text-sm sm:text-base">Enter your email and password to access your account</p>
+                  <div className="flex flex-col space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                     <OAuthButton type="github" />
                     <OAuthButton type="discord" />
                   </div>
 
-                  <div className="flex items-center text-gray-400 mb-6">
+                  <div className="flex items-center text-gray-400 mb-4 sm:mb-6">
                     <hr className="flex-grow border-t border-gray-600" />
                     <span className="mx-3 text-sm select-none">Or</span>
                     <hr className="flex-grow border-t border-gray-600" />

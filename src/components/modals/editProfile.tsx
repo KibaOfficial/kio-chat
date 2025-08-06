@@ -132,19 +132,19 @@ export const EditProfileModal = () => {
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md bg-slate-900 border border-slate-800 rounded-xl shadow-2xl">
+      <DialogContent className="max-w-xs sm:max-w-md bg-slate-900 border border-slate-800 rounded-xl shadow-2xl mx-4">
         
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
+          <DialogTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
             Edit your Profile
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            <div className="flex flex-col items-center gap-4 mb-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
+            <div className="flex flex-col items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
               <div className="relative group">
-                <UserAvatar src={avatarUrl} className="w-24 h-24 border-4 border-blue-400/50" />
+                <UserAvatar src={avatarUrl} className="w-20 h-20 sm:w-24 sm:h-24 border-4 border-blue-400/50" />
                 {avatarUrl && (
                   <button
                     type="button"
@@ -152,10 +152,10 @@ export const EditProfileModal = () => {
                       setAvatarUrl("");
                       form.setValue("image", "");
                     }}
-                    className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition-colors"
+                    className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition-colors"
                     title="Remove avatar"
                   >
-                    <X size={16} />
+                    <X size={12} className="sm:w-4 sm:h-4" />
                   </button>
                 )}
               </div>
@@ -177,16 +177,16 @@ export const EditProfileModal = () => {
                 />
                 <label
                   htmlFor="avatar-upload"
-                  className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-lg transition-all hover:scale-105 shadow-lg cursor-pointer ${
+                  className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-3 sm:px-4 py-2 rounded-lg transition-all hover:scale-105 shadow-lg cursor-pointer text-sm ${
                     isUploading ? 'animate-pulse opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <Upload size={16} />
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <Upload size={14} className="sm:w-4 sm:h-4" />
                     {isUploading ? "Uploading..." : "Upload Avatar"}
                   </div>
                 </label>
-                <p className="text-xs text-slate-500 text-center">
+                <p className="text-xs text-slate-500 text-center max-w-xs">
                   Upload a profile image or leave empty for default avatar
                 </p>
                 
