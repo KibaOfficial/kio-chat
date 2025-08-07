@@ -67,7 +67,7 @@ export const UserProfileSidebar = ({ user, isVisible, onClose }: UserProfileSide
           <div className="flex flex-col items-center text-center mb-4 sm:mb-6">
             <UserAvatar
               src={user.image}
-              className="w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 rounded-full shadow-lg border-4 border-slate-800/60 mb-2 sm:mb-3"
+              className="w-16 h-16 sm:w-20 sm:h-20 lg:w-20 lg:h-20 rounded-full shadow-lg border-4 border-slate-800/60 mb-2 sm:mb-3"
             />
             <h3 className="text-base sm:text-lg lg:text-xl font-bold text-slate-200 mb-1">
               {user.name || "Unknown User"}
