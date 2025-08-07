@@ -187,8 +187,8 @@ const InfoCard = () => {
               <Image
                 src="/img/kio-chat-logo.png"
                 alt="Kio-Chat Logo"
-                width={80}
-                height={80}
+                width={64}
+                height={64}
                 className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-xl bg-white/10 ring-2 ring-white/20 group-hover:scale-105 transition-transform duration-300"
                 priority
               />
@@ -262,7 +262,7 @@ const InfoCard = () => {
             <div className="flex flex-wrap justify-center gap-2 sm:gap-3 sm:justify-start">
               <Badge className="bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-200 border-red-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                 <Shield className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">End-to-End </span>Encrypted
+                <span className="sm:hidden">Encrypted</span><span className="hidden sm:inline">End-to-End Encrypted</span>
               </Badge>
               <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-200 border-green-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                 <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -270,19 +270,19 @@ const InfoCard = () => {
               </Badge>
               <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-200 border-purple-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                 <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Voice & </span>Video<span className="hidden sm:inline"> Calls</span>
+                <span className="sm:hidden">Video</span><span className="hidden sm:inline">Voice & Video Calls</span>
               </Badge>
               <Badge className="bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-200 border-pink-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                 <Smile className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Custom </span>Stickers
+                <span className="sm:hidden">Stickers</span><span className="hidden sm:inline">Custom Stickers</span>
               </Badge>
               <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-200 border-blue-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                 <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                <span className="hidden sm:inline">Instant </span>Delivery
+                <span className="sm:hidden">Delivery</span><span className="hidden sm:inline">Instant Delivery</span>
               </Badge>
               <Badge className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-200 border-yellow-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
                 <Camera className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                Media <span className="hidden sm:inline">Sharing</span>
+                <span className="sm:hidden">Media</span><span className="hidden sm:inline">Media Sharing</span>
               </Badge>
             </div>
           </div>
@@ -308,7 +308,7 @@ const InfoCard = () => {
                   Auth.js
                 </span>
                 <span className="px-2 py-1 bg-gray-500/10 text-gray-300 rounded border border-gray-500/20 text-xs">
-                  Tailwind
+                  Tailwind CSS
                 </span>
                 <span className="px-2 py-1 bg-indigo-500/10 text-indigo-300 rounded border border-indigo-500/20 text-xs">
                   WebSockets
