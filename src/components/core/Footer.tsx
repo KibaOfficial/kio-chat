@@ -43,7 +43,6 @@ const Footer = () => {
               <ul className="space-y-2 text-gray-400 text-sm">
                 {[
                   { name: "Home", href: "/" }
-                  // TODO: Add more links as needed
                 ].map((link, index) => (
                   <li key={index}>
                     <a 

@@ -33,7 +33,6 @@ const InfoCard = () => {
     revalidateOnReconnect: false,
   });
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="relative overflow-hidden">
@@ -50,7 +49,6 @@ const InfoCard = () => {
     )
   }
 
-  // Error state
   if (error) {
     return (
       <div className="relative overflow-hidden">        

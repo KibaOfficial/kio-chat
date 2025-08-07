@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { Card, CardHeader } from "../ui/card";
 import { Loader2, Lock } from "lucide-react";
 
-// Separate Komponente für die Verification Logic
+// Separate component for verification logic
 const VerificationContent = () => {
   const [ error, setError ] = useState<string | undefined>();
   const [ success, setSuccess ] = useState<string | undefined>();
@@ -86,7 +86,6 @@ const VerificationContent = () => {
   );
 };
 
-// Loading Fallback
 const VerificationLoading = () => (
   <Card className="w-full max-w-md mx-auto p-8 bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 border border-slate-700/50 shadow-2xl rounded-2xl">
     <CardHeader>
@@ -108,7 +107,7 @@ const VerificationLoading = () => (
   </Card>
 );
 
-// Hauptkomponente mit Suspense INNERHALB der Client Component
+// Main component with Suspense INSIDE the Client Component
 export const VerificationForm = () => {
   return (
     <Suspense fallback={<VerificationLoading />}>

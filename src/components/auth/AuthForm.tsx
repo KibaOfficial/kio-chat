@@ -70,7 +70,6 @@ const AuthForm = () => {
       toast.error("Invalid email or password.");
     } else {
       setSubmitMessage("Login successful! Redirecting...");
-      // Optional: redirect zur geschützten Seite
       window.location.href = "/app"; 
     }
   };
@@ -111,7 +110,7 @@ const AuthForm = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative py-6 sm:py-12 px-4 sm:px-6 lg:px-8">
-      {/* Background & UI Layout wie gehabt */}
+      {/* Background & UI Layout */}
       <div className="relative z-10 w-full max-w-xs sm:max-w-md">
         <div className="bg-gradient-to-br from-slate-900/95 via-slate-800/90 to-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-2xl rounded-2xl p-4 sm:p-8">
           <Tabs value={authMode} onValueChange={handleTabChange} className="w-full">
