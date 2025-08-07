@@ -187,9 +187,9 @@ const InfoCard = () => {
               <Image
                 src="/img/kio-chat-logo.png"
                 alt="Kio-Chat Logo"
-                width={64}
-                height={64}
-                className="relative rounded-xl shadow-xl bg-white/10 ring-2 ring-white/20 group-hover:scale-105 transition-transform duration-300 sm:w-20 sm:h-20"
+                width={80}
+                height={80}
+                className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-xl bg-white/10 ring-2 ring-white/20 group-hover:scale-105 transition-transform duration-300"
                 priority
               />
             </div>
