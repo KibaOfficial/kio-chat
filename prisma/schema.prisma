@@ -85,14 +85,23 @@ model ChatUser {
   @@unique([chatId, userId])
 }
 
+enum MessageStatus {
+  SENT
+  DELIVERED
+  READ
+}
+
 model Message {
-  id        String   @id @default(cuid())
-  chatId    String
-  senderId  String
-  content   String
-  fileUrl   String?
-  fileName  String?
-  createdAt DateTime @default(now())
-  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  sender    User     @relation("UserToMessage", fields: [senderId], references: [id], onDelete: Cascade)
+  id          String        @id @default(cuid())
+  chatId      String
+  senderId    String
+  content     String
+  fileUrl     String?
+  fileName    String?
+  status      MessageStatus @default(SENT)
+  deliveredAt DateTime?
+  readAt      DateTime?
+  createdAt   DateTime      @default(now())
+  chat        Chat          @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  sender      User          @relation("UserToMessage", fields: [senderId], references: [id], onDelete: Cascade)
 }

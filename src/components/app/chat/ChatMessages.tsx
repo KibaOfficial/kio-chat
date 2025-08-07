@@ -17,6 +17,7 @@ import UserAvatar from "../user-avatar";
 import { FileIcon, ImageIcon, Download } from "lucide-react";
 import Image from "next/image";
 import { formatMessageTime, shouldGroupMessages } from "@/lib/utils/time";
+import { MessageStatus, getMessageStatus } from "./MessageStatus";
 
 interface ChatMessagesProps {
   name: string;
@@ -156,7 +157,9 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
           const isOwn = (m.sender?.id || m.senderId) === currentUserId;
           const messageUser = m.sender || { id: m.senderId };
           const previousMessage = i > 0 ? messages[i - 1] : null;
+          const nextMessage = i < messages.length - 1 ? messages[i + 1] : null;
           const isGrouped = shouldGroupMessages(previousMessage, m);
+          const isLastInGroup = i === messages.length - 1 || !shouldGroupMessages(m, nextMessage);
           
           // Create truly unique key - prefer ID, fallback to index with random suffix
           const uniqueKey = m.id ? `msg-${m.id}` : `temp-${i}-${Math.random().toString(36).substr(2, 9)}`;
@@ -337,13 +340,20 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
               </div>
               </div>
               
-              {/* Timestamp - only show if not grouped or last message */}
-              {(!isGrouped || i === messages.length - 1 || !shouldGroupMessages(m, messages[i + 1])) && (
+              {/* Timestamp and Message Status - only show if not grouped or last in group */}
+              {(!isGrouped || isLastInGroup) && (
                 <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mt-1 px-2`}>
-                  <div className="ml-10">
+                  <div className="ml-10 flex items-center gap-2">
                     <span className="text-xs text-slate-500 select-none">
                       {formatMessageTime(m.createdAt)}
                     </span>
+                    {/* Message Status - only show for sent messages (own messages) */}
+                    {isOwn && (
+                      <MessageStatus 
+                        status={getMessageStatus(m)}
+                        className="ml-1"
+                      />
+                    )}
                   </div>
                 </div>
               )}
