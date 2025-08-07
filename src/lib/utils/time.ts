@@ -106,22 +106,7 @@ export function formatSidebarTime(date: Date | string): string {
     });
   }
   
-  // Yesterday  
-  const yesterday = new Date(now);
-  yesterday.setDate(yesterday.getDate() - 1);
-  const isYesterday = messageDate.toDateString() === yesterday.toDateString();
-  if (isYesterday) {
-    return "yesterday";
-  }
-  
-  // This week
-  const diffInDays = Math.floor(diffInSeconds / (3600 * 24));
-  if (diffInDays < 7) {
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return dayNames[messageDate.getDay()];
-  }
-  
-  // Older - just show date
+  // All other dates - show consistent DD/MM format  
   return messageDate.toLocaleDateString('en-GB', {
     day: '2-digit',
     month: '2-digit'
