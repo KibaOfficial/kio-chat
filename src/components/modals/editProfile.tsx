@@ -186,7 +186,7 @@ export const EditProfileModal = () => {
                     {isUploading ? "Uploading..." : "Upload Avatar"}
                   </div>
                 </label>
-                <p className="text-xs text-slate-500 text-center max-w-xs">
+                <p className="text-xs text-slate-500 text-center max-w-xs sm:max-w-sm md:max-w-md">
                   Upload a profile image or leave empty for default avatar
                 </p>
                 
