@@ -59,6 +59,12 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
       lastMessageTime: lastMessage?.createdAt,
       imageUrl: partner?.user.image,
     };
+  }).sort((a, b) => {
+    // Sort by last message time - newest first
+    if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+    if (!a.lastMessageTime) return 1; // No messages go to bottom
+    if (!b.lastMessageTime) return -1;
+    return new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime();
   });
 
   return (
