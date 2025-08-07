@@ -155,7 +155,7 @@ export const EditProfileModal = () => {
                     className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition-colors"
                     title="Remove avatar"
                   >
-                    <X size={12} className="sm:w-4 sm:h-4" />
+                    <X className="w-3 h-3 sm:w-4 sm:h-4" />
                   </button>
                 )}
               </div>
@@ -182,7 +182,7 @@ export const EditProfileModal = () => {
                   }`}
                 >
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <Upload size={14} className="sm:w-4 sm:h-4" />
+                    <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     {isUploading ? "Uploading..." : "Upload Avatar"}
                   </div>
                 </label>
