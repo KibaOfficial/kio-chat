@@ -33,7 +33,6 @@ const InfoCard = () => {
     revalidateOnReconnect: false,
   });
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="relative overflow-hidden">
@@ -50,7 +49,6 @@ const InfoCard = () => {
     )
   }
 
-  // Error state
   if (error) {
     return (
       <div className="relative overflow-hidden">        
@@ -183,26 +181,26 @@ const InfoCard = () => {
           </div>
 
           {/* Hero Section */}
-          <div className="flex flex-col items-center gap-6 mb-8 text-center lg:flex-row lg:text-left lg:gap-8">
-            <div className="relative group">
+          <div className="flex flex-col items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-center lg:flex-row lg:text-left lg:gap-8">
+            <div className="relative group flex-shrink-0">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
               <Image
                 src="/img/kio-chat-logo.png"
                 alt="Kio-Chat Logo"
-                width={80}
-                height={80}
-                className="relative rounded-xl shadow-xl bg-white/10 ring-2 ring-white/20 group-hover:scale-105 transition-transform duration-300"
+                width={64}
+                height={64}
+                className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl shadow-xl bg-white/10 ring-2 ring-white/20 group-hover:scale-105 transition-transform duration-300"
                 priority
               />
             </div>
 
-            <div className="flex-1">
-              <div className="flex flex-col items-center gap-4 mb-4 lg:flex-row lg:items-center">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
+            <div className="flex-1 w-full">
+              <div className="flex flex-col items-center gap-3 sm:gap-4 mb-4 lg:flex-row lg:items-center">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
                   Kio-Chat
                 </h1>
                 <div className="flex flex-col items-center gap-2 sm:flex-row lg:justify-start">
-                  <Badge className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-200 border-blue-500/30 px-3 py-1 text-xs">
+                  <Badge className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-200 border-blue-500/30 px-2 sm:px-3 py-1 text-xs">
                     <Zap className="h-3 w-3 mr-1" />
                     v{stats?.github.version || '0.0.0'}
                   </Badge>
@@ -210,7 +208,7 @@ const InfoCard = () => {
                 </div>
               </div>
               
-              <p className="text-lg sm:text-xl text-slate-300 mb-6 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-slate-300 mb-4 sm:mb-6 leading-relaxed max-w-none lg:max-w-4xl">
                 Your <span className="text-blue-400 font-semibold">all-in-one</span> chat solution for 
                 <span className="text-purple-400 font-semibold"> seamless communication</span> with your{" "}
                 <span className="text-green-400 font-semibold">family</span>, <span className="text-cyan-400 font-semibold">friends</span> and <span className="text-pink-400 font-semibold">others</span>
@@ -219,36 +217,36 @@ const InfoCard = () => {
               <div>
                 <Button 
                   size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
                   onClick={() => window.open('https://github.com/KibaOfficial/kio-chat', '_blank')}
                 >
-                  <Github className="h-5 w-5 mr-2 group-hover:rotate-12 transition-transform" />
+                  <Github className="h-4 w-4 sm:h-5 sm:w-5 mr-2 group-hover:rotate-12 transition-transform" />
                   View on GitHub
-                  <ExternalLink className="h-4 w-4 ml-2" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 ml-2" />
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-6 sm:mb-8 sm:grid-cols-2 lg:grid-cols-4">
             
-            <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/30 backdrop-blur-sm rounded-lg p-4 border border-slate-600/30 text-center sm:text-left">
-              <div className="flex flex-col items-center gap-2 mb-1 sm:flex-row">
-                <Star className="h-5 w-5 sm:h-4 sm:w-4 text-yellow-400" />
-                <span className="text-sm sm:text-xs text-slate-400">Stars</span>
+            <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-slate-600/30 text-center">
+              <div className="flex flex-col items-center gap-1 sm:gap-2 mb-2">
+                <Star className="h-5 w-5 text-yellow-400" />
+                <span className="text-xs sm:text-sm text-slate-400">Stars</span>
               </div>
-              <div className="text-2xl sm:text-xl font-bold text-white">
+              <div className="text-xl sm:text-2xl font-bold text-white">
                 {stats?.github.stars || 0}
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/30 backdrop-blur-sm rounded-lg p-4 border border-slate-600/30 text-center sm:text-left">
-              <div className="flex flex-col items-center gap-2 mb-1 sm:flex-row">
-                <Activity className="h-5 w-5 sm:h-4 sm:w-4 text-green-400" />
-                <span className="text-sm sm:text-xs text-slate-400">Uptime</span>
+            <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/30 backdrop-blur-sm rounded-lg p-3 sm:p-4 border border-slate-600/30 text-center">
+              <div className="flex flex-col items-center gap-1 sm:gap-2 mb-2">
+                <Activity className="h-5 w-5 text-green-400" />
+                <span className="text-xs sm:text-sm text-slate-400">Uptime</span>
               </div>
-              <div className="text-2xl sm:text-xl font-bold text-white">
+              <div className="text-xl sm:text-2xl font-bold text-white">
                 {stats?.uptime || '0d 0h 0m'}
               </div>
             </div>
@@ -256,44 +254,44 @@ const InfoCard = () => {
           </div>
 
           {/* Feature Badges */}
-          <div className="space-y-4">
-            <h3 className="text-lg sm:text-base font-semibold text-white flex flex-col items-center gap-2 sm:flex-row">
-              <Star className="h-6 w-6 sm:h-5 sm:w-5 text-yellow-400" />
+          <div className="space-y-3 sm:space-y-4">
+            <h3 className="text-base sm:text-lg font-semibold text-white flex flex-col items-center gap-2 sm:flex-row">
+              <Star className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-400" />
               Core Features
             </h3>
-            <div className="flex flex-wrap justify-center gap-3 sm:justify-start">
-              <Badge className="bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-200 border-red-500/30 px-4 py-2 text-sm">
-                <Shield className="h-4 w-4 mr-2" />
-                End-to-End Encrypted
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 sm:justify-start">
+              <Badge className="bg-gradient-to-r from-red-500/20 to-orange-500/20 text-red-200 border-red-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+                <Shield className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="sm:hidden">Encrypted</span><span className="hidden sm:inline">End-to-End Encrypted</span>
               </Badge>
-              <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-200 border-green-500/30 px-4 py-2 text-sm">
-                <Users className="h-4 w-4 mr-2" />
+              <Badge className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 text-green-200 border-green-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+                <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 Group Chats
               </Badge>
-              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-200 border-purple-500/30 px-4 py-2 text-sm">
-                <Phone className="h-4 w-4 mr-2" />
-                Voice & Video Calls
+              <Badge className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-200 border-purple-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+                <Phone className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="sm:hidden">Video</span><span className="hidden sm:inline">Voice & Video Calls</span>
               </Badge>
-              <Badge className="bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-200 border-pink-500/30 px-4 py-2 text-sm">
-                <Smile className="h-4 w-4 mr-2" />
-                Custom Stickers
+              <Badge className="bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-200 border-pink-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+                <Smile className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="sm:hidden">Stickers</span><span className="hidden sm:inline">Custom Stickers</span>
               </Badge>
-              <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-200 border-blue-500/30 px-4 py-2 text-sm">
-                <Zap className="h-4 w-4 mr-2" />
-                Instant Delivery
+              <Badge className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-200 border-blue-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+                <Zap className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="sm:hidden">Delivery</span><span className="hidden sm:inline">Instant Delivery</span>
               </Badge>
-              <Badge className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-200 border-yellow-500/30 px-4 py-2 text-sm">
-                <Camera className="h-4 w-4 mr-2" />
-                Media Sharing
+              <Badge className="bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-200 border-yellow-500/30 px-3 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm">
+                <Camera className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="sm:hidden">Media</span><span className="hidden sm:inline">Media Sharing</span>
               </Badge>
             </div>
           </div>
 
           {/* Tech Stack */}
-          <div className="mt-8 pt-6 border-t border-slate-700/50">
-            <div className="flex flex-col items-center gap-4 text-sm text-slate-400 sm:flex-row sm:flex-wrap">
-              <span className="font-medium text-slate-300">Build with:</span>
-              <div className="flex flex-wrap justify-center gap-2 text-blue-300 rounded border border-blue-500/20 text-xs">
+          <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700/50">
+            <div className="flex flex-col items-center gap-3 sm:gap-4 text-xs sm:text-sm text-slate-400">
+              <span className="font-medium text-slate-300">Built with:</span>
+              <div className="flex flex-wrap justify-center gap-1 sm:gap-2">
                 <span className="px-2 py-1 bg-blue-500/10 text-blue-300 rounded border border-blue-500/20 text-xs">
                   {stats?.github.language || 'TypeScript'}
                 </span>

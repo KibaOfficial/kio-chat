@@ -61,8 +61,8 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
   return (
     <aside className="w-full md:w-80 h-full bg-slate-900/60 backdrop-blur-xl border-r border-slate-800/50 shadow-2xl flex flex-col relative">
       {/* Header */}
-      <div className="h-16 px-6 py-4 border-b border-slate-800/50 bg-gradient-to-r from-slate-900/80 to-slate-800/50 flex-shrink-0 flex items-center">
-        <h2 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
+      <div className="h-14 sm:h-16 px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800/50 bg-gradient-to-r from-slate-900/80 to-slate-800/50 flex-shrink-0 flex items-center">
+        <h2 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-emerald-300 bg-clip-text text-transparent">
           Your Chats
         </h2>
         {/* User Avatar for the logged-in user - clickable to open edit profile */}
@@ -73,15 +73,15 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
         >
           <UserAvatar 
             src={user.image} 
-            className="w-10 h-10 rounded-full border-2 border-slate-800 hover:border-blue-400 transition-colors"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-slate-800 hover:border-blue-400 transition-colors"
           />
         </button>
       </div>
 
       {/* Chat List - mit padding-bottom für den Button */}
-      <div className="flex-1 overflow-y-auto pb-20">
+      <div className="flex-1 overflow-y-auto pb-16 sm:pb-20">
         {chatPartners.length === 0 ? (
-          <div className="text-slate-400 px-6 py-6 text-center">
+          <div className="text-slate-400 px-4 sm:px-6 py-4 sm:py-6 text-center text-sm sm:text-base">
             No chats yet. Start a new one 🚀
           </div>
         ) : (
@@ -89,16 +89,16 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
             <Link
               key={user.id}
               href={`/app/chat/${user.id}`}
-              className="flex items-center gap-4 px-6 py-4 hover:bg-slate-800/40 transition-colors group"
+              className="flex items-center gap-3 sm:gap-4 px-3 sm:px-6 py-3 sm:py-4 hover:bg-slate-800/40 transition-colors group"
             >
-              <div className="relative group-hover:scale-105 transition-transform">
-                <UserAvatar src={user.imageUrl} />
+              <div className="relative group-hover:scale-105 transition-transform flex-shrink-0">
+                <UserAvatar src={user.imageUrl} className="w-10 h-10 sm:w-12 sm:h-12" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-slate-200 truncate">
+                <p className="font-medium text-slate-200 truncate text-sm sm:text-base">
                   {user.name}
                 </p>
-                <p className="text-sm text-slate-400 truncate">
+                <p className="text-xs sm:text-sm text-slate-400 truncate">
                   {user.lastMessage}
                 </p>
               </div>
@@ -108,10 +108,10 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
       </div>
 
       {/* Button Container - fixed am unteren Rand der Sidebar */}
-      <div className="absolute bottom-0 right-0 p-4 pointer-events-none">
+      <div className="absolute bottom-0 right-0 p-3 sm:p-4 pointer-events-none">
         <button
           type="button"
-          className="p-4 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 shadow-xl hover:scale-105 transition-transform border-4 border-slate-900/80 focus:outline-none focus:ring-2 focus:ring-blue-400 pointer-events-auto"
+          className="p-3 sm:p-4 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-purple-600 shadow-xl hover:scale-105 transition-transform border-2 sm:border-4 border-slate-900/80 focus:outline-none focus:ring-2 focus:ring-blue-400 pointer-events-auto"
           aria-label="Start new chat"
           onClick={() => {
             onOpen('createNewChat');
@@ -126,7 +126,7 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="w-6 h-6 text-white"
+            className="w-5 h-5 sm:w-6 sm:h-6 text-white"
           >
             <path d="M12 20h9" />
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z" />
