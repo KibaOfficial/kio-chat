@@ -37,20 +37,21 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
-  name          String
-  email         String     @unique
-  password      String?
-  emailVerified Boolean    @default(false) @map("email_verified")
-  approved      Boolean    @default(false)
-  image         String?
-  description   String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  chatUsers     ChatUser[]
-  sentMessages  Message[]  @relation("UserToMessage")
-  accounts      Account[]
-  sessions      Session[]
+  id                String             @id @default(cuid())
+  name              String
+  email             String             @unique
+  password          String?
+  emailVerified     Boolean            @default(false) @map("email_verified")
+  approved          Boolean            @default(false)
+  image             String?
+  description       String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  chatUsers         ChatUser[]
+  sentMessages      Message[]          @relation("UserToMessage")
+  accounts          Account[]
+  sessions          Session[]
+  pushSubscriptions PushSubscription[]
 
   @@map("users")
 }
@@ -104,4 +105,18 @@ model Message {
   createdAt   DateTime      @default(now())
   chat        Chat          @relation(fields: [chatId], references: [id], onDelete: Cascade)
   sender      User          @relation("UserToMessage", fields: [senderId], references: [id], onDelete: Cascade)
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, endpoint])
+  @@map("push_subscriptions")
 }
