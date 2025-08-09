@@ -27,12 +27,12 @@ self.addEventListener('push', function(event) {
     actions: [
       {
         action: 'reply',
-        title: 'Antworten',
+        title: 'Reply',
         icon: '/icons/reply.png'
       },
       {
         action: 'mark-read',
-        title: 'Als gelesen markieren',
+        title: 'Mark as Read',
         icon: '/icons/read.png'
       }
     ],

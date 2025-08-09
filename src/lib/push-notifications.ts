@@ -127,11 +127,11 @@ export async function sendMessageNotification(
     actions: [
       {
         action: 'reply',
-        title: 'Antworten'
+        title: 'Reply',
       },
       {
         action: 'mark-read',
-        title: 'Als gelesen markieren'
+        title: 'Mark as Read',
       }
     ]
   };
