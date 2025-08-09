@@ -7,6 +7,7 @@
 import Link from "next/link";
 import UserAvatar from "./user-avatar";
 import { useModal } from "../hooks/useModal";
+import { formatSidebarTime } from "@/lib/utils/time";
 
 const DUMMY_DATA = [
   {
@@ -50,12 +51,20 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
 
   const chatPartners = chats.map((chat) => {
     const partner = chat.users.find((u: any) => u.user.id !== user.id);
+    const lastMessage = chat.messages[0];
     return {
       id: chat.id,
-      name: partner?.user.name || "Unbekannt",
-      lastMessage: chat.messages[0]?.content || "No messages yet",
+      name: partner?.user.name || "Unknown",
+      lastMessage: lastMessage?.content || "No messages yet",
+      lastMessageTime: lastMessage?.createdAt,
       imageUrl: partner?.user.image,
     };
+  }).sort((a, b) => {
+    // Sort by last message time - newest first
+    if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+    if (!a.lastMessageTime) return 1; // No messages go to bottom
+    if (!b.lastMessageTime) return -1;
+    return new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime();
   });
 
   return (
@@ -95,9 +104,16 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
                 <UserAvatar src={user.imageUrl} className="w-10 h-10 sm:w-12 sm:h-12" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-slate-200 truncate text-sm sm:text-base">
-                  {user.name}
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="font-medium text-slate-200 truncate text-sm sm:text-base">
+                    {user.name}
+                  </p>
+                  {user.lastMessageTime && (
+                    <span className="text-xs text-slate-500 flex-shrink-0 ml-2">
+                      {formatSidebarTime(user.lastMessageTime)}
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs sm:text-sm text-slate-400 truncate">
                   {user.lastMessage}
                 </p>

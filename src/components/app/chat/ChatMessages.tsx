@@ -16,6 +16,8 @@ import { useModal } from "@/components/hooks/useModal";
 import UserAvatar from "../user-avatar";
 import { FileIcon, ImageIcon, Download } from "lucide-react";
 import Image from "next/image";
+import { formatMessageTime, shouldGroupMessages } from "@/lib/utils/time";
+import { MessageStatus, getMessageStatus } from "./MessageStatus";
 
 interface ChatMessagesProps {
   name: string;
@@ -121,8 +123,12 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
     socket.emit("join", chatId);
     socket.on("message", (msg: any) => {
       setMessages((prev) => {
-        // Check if message already exists to prevent duplicates
-        const exists = prev.some(existingMsg => existingMsg.id === msg.id);
+        // Check if message already exists to prevent duplicates (check by ID and content)
+        const exists = prev.some(existingMsg => 
+          existingMsg.id === msg.id || 
+          (existingMsg.content === msg.content && 
+           Math.abs(new Date(existingMsg.createdAt).getTime() - new Date(msg.createdAt).getTime()) < 1000)
+        );
         if (exists) {
           return prev;
         }
@@ -146,31 +152,37 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
       ref={chatRef}
     >
       {/* Chat Messages */}
-      <div className="flex flex-col gap-3 px-2 pb-2 mt-auto">
+      <div className="flex flex-col px-2 pb-2 mt-auto">
         {messages.map((m, i) => {
           const isOwn = (m.sender?.id || m.senderId) === currentUserId;
           const messageUser = m.sender || { id: m.senderId };
+          const previousMessage = i > 0 ? messages[i - 1] : null;
+          const nextMessage = i < messages.length - 1 ? messages[i + 1] : null;
+          const isGrouped = shouldGroupMessages(previousMessage, m);
+          const isLastInGroup = i === messages.length - 1 || !shouldGroupMessages(m, nextMessage);
           
-          // Create unique key combining id and timestamp to prevent duplicates
-          const uniqueKey = m.id ? `${m.id}-${m.createdAt || i}` : `temp-${i}-${Date.now()}`;
+          // Create truly unique key - prefer ID, fallback to index with random suffix
+          const uniqueKey = m.id ? `msg-${m.id}` : `temp-${i}-${Math.random().toString(36).substr(2, 9)}`;
           
           return (
-            <div
-              key={uniqueKey}
-              className={`flex items-end gap-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}
-            >
-              {/* User Avatar */}
-              <div 
-                className="cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => handleAvatarClick(messageUser)}
-              >
-                <UserAvatar 
-                  src={messageUser.image} 
-                  className="h-8 w-8"
-                  showOnlineStatus={true}
-                  isOnline={onlineUsers.some(user => user.userId === messageUser.id)}
-                />
-              </div>
+            <div key={uniqueKey} className={`${isGrouped ? 'mt-1' : 'mt-4'}`}>
+              <div className={`flex items-end gap-2 ${isOwn ? 'flex-row-reverse' : 'flex-row'}`}>
+                {/* User Avatar - only show if not grouped */}
+                <div className="w-8 h-8 flex-shrink-0">
+                  {!isGrouped && (
+                    <div 
+                      className="cursor-pointer hover:opacity-80 transition-opacity"
+                      onClick={() => handleAvatarClick(messageUser)}
+                    >
+                      <UserAvatar 
+                        src={messageUser.image} 
+                        className="h-8 w-8"
+                        showOnlineStatus={true}
+                        isOnline={onlineUsers.some(user => user.userId === messageUser.id)}
+                      />
+                    </div>
+                  )}
+                </div>
               
               {/* Message Bubble */}
               <div
@@ -326,6 +338,25 @@ export const ChatMessages = ({ name, chatId, currentUserId, currentUser }: ChatM
                   </div>
                 )}
               </div>
+              </div>
+              
+              {/* Timestamp and Message Status - only show if not grouped or last in group */}
+              {(!isGrouped || isLastInGroup) && (
+                <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} mt-1 px-2`}>
+                  <div className="ml-10 flex items-center gap-2">
+                    <span className="text-xs text-slate-500 select-none">
+                      {formatMessageTime(m.createdAt)}
+                    </span>
+                    {/* Message Status - only show for sent messages (own messages) */}
+                    {isOwn && (
+                      <MessageStatus 
+                        status={getMessageStatus(m)}
+                        className="ml-1"
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
