@@ -27,9 +27,6 @@ export async function getChats(userId: string) {
         take: 1,
       },
     },
-    orderBy: {
-      updatedAt: "desc", // Sort chats by last activity
-    },
   });
 }
 

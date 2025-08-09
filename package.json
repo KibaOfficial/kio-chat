@@ -1,6 +1,6 @@
 {
   "name": "kio-chat",
-  "version": "pre-1.4.0",
+  "version": "1.3.1",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -21,7 +21,6 @@
     "@radix-ui/react-tabs": "^1.1.12",
     "@types/bcryptjs": "^2.4.6",
     "@types/minio": "^7.1.0",
-    "@types/web-push": "^3.6.4",
     "@uploadthing/react": "^7.3.2",
     "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
@@ -49,7 +48,6 @@
     "uploadthing": "^7.7.3",
     "use-sound": "^5.0.0",
     "uuid": "^11.1.0",
-    "web-push": "^3.6.7",
     "zod": "^4.0.10",
     "zustand": "^5.0.6"
   },
