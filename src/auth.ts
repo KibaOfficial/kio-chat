@@ -10,7 +10,7 @@ import customAdapter from "./lib/adapter/customAdapter";
 import { prisma } from "./lib/prisma";
 import bcrypt from "bcryptjs";
 
-export const authOptions = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: customAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -70,6 +70,4 @@ export const authOptions = {
       return session;
     },
   },
-};
-
-export const { handlers, signIn, signOut, auth } = NextAuth(authOptions);
+});
