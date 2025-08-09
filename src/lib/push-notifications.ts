@@ -75,7 +75,7 @@ export async function sendPushNotification(userId: string, payload: Notification
           if (error.statusCode === 410 || error.statusCode === 404) {
             await prisma.pushSubscription.delete({
               where: { id: subscription.id }
-            }).catch(() => {}); // Ignore deletion errors
+            }).catch((error) => console.warn('Failed to delete invalid subscription:', error));
           }
           
           throw error;

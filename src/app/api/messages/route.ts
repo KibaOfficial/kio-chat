@@ -122,8 +122,12 @@ export async function POST(req: NextRequest) {
     );
 
     // Send notifications in background (don't wait for them)
-    Promise.all(notificationPromises).catch(error => {
-      console.error('Failed to send push notifications:', error);
+    Promise.allSettled(notificationPromises).then(results => {
+      results.forEach((result, idx) => {
+        if (result.status === 'rejected') {
+          console.error(`Failed to send push notification to user ${otherChatUsers[idx].userId}:`, result.reason);
+        }
+      });
     });
 
     return NextResponse.json(message);

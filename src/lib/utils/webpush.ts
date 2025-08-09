@@ -29,7 +29,7 @@ export function urlBase64ToUint8Array(base64String: string): Uint8Array {
  * Detects if the current browser is Brave
  */
 export function isBraveBrowser(): boolean {
-  return (navigator as any).brave !== undefined;
+  return 'brave' in navigator;
 }
 
 /**

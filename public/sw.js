@@ -52,7 +52,7 @@ self.addEventListener('notificationclick', function(event) {
   if (event.action === 'reply') {
     // Handle reply action
     event.waitUntil(
-      clients.openWindow(`/app/chat/${event.notification.data.chatId}#reply`)
+      clients.openWindow(`/app/chat/${encodeURIComponent(event.notification.data.chatId)}#reply`)
     );
   } else if (event.action === 'mark-read') {
     // Handle mark as read action
@@ -68,7 +68,7 @@ self.addEventListener('notificationclick', function(event) {
   } else {
     // Default action - open chat
     event.waitUntil(
-      clients.openWindow(`/app/chat/${event.notification.data.chatId}`)
+      clients.openWindow(`/app/chat/${encodeURIComponent(event.notification.data.chatId)}`)
     );
   }
 });
