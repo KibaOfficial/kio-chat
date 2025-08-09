@@ -145,8 +145,8 @@ export async function sendTypingNotification(
   chatId: string
 ) {
   const payload: NotificationPayload = {
-    title: `${senderName} tippt...`,
-    body: 'Neue Nachricht wird geschrieben',
+    title: `${senderName} is typing...`,
+    body: 'New message is being written',
     tag: `typing-${chatId}`,
     data: {
       chatId,

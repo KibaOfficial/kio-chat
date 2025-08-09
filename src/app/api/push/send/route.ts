@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     });
 
     const payload = JSON.stringify({
-      title: `New message from ${sender?.name || 'Unbekannt'}`,
+      title: `New message from ${sender?.name || 'Unknown'}`,
       body: message.length > 100 ? message.substring(0, 100) + '...' : message,
       icon: sender?.image || '/icon-192x192.png',
       tag: `chat-${chatId}`,

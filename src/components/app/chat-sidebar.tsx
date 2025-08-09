@@ -54,7 +54,7 @@ const ChatSidebar = ({ user, chats }: ChatSidebarProps) => {
     const lastMessage = chat.messages[0];
     return {
       id: chat.id,
-      name: partner?.user.name || "Unbekannt",
+      name: partner?.user.name || "Unknown",
       lastMessage: lastMessage?.content || "No messages yet",
       lastMessageTime: lastMessage?.createdAt,
       imageUrl: partner?.user.image,
