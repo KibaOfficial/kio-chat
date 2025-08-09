@@ -76,7 +76,12 @@ export async function POST(req: NextRequest) {
         console.error('Failed to send notification:', error);
         
         // Remove invalid subscriptions
-        if (error.statusCode === 410 || error.statusCode === 404) {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "statusCode" in error &&
+          (error as any).statusCode === 410 || (error as any).statusCode === 404
+        ) {
           await prisma.pushSubscription.delete({
             where: { id: subscription.id }
           });

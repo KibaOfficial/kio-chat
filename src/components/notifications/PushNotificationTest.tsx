@@ -224,7 +224,7 @@ export default function PushNotificationTest() {
 
       <div className="mt-4 text-xs text-gray-500">
         <p><strong>Note:</strong> Make sure VAPID keys are configured in your .env file</p>
-        <p><strong>User ID:</strong> {session.user.id}</p>
+        <p><strong>User ID:</strong> {session.user?.id}</p>
       </div>
     </div>
   );
