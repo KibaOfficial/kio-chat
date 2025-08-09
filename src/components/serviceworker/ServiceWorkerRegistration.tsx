@@ -2,6 +2,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { urlBase64ToUint8Array, isBraveBrowser, isPushNotificationSupported, getNotificationPermission } from '@/lib/utils/webpush'
 
 export default function ServiceWorkerRegistration() {
   const { data: session } = useSession()
@@ -18,7 +19,7 @@ export default function ServiceWorkerRegistration() {
       const registration = await navigator.serviceWorker.register('/sw.js')
       
       // Check if this is Brave browser
-      const isBrave = (navigator as any).brave !== undefined
+      const isBrave = isBraveBrowser()
       
       // Request notification permission
       if ('Notification' in window && Notification.permission === 'default') {
@@ -30,7 +31,6 @@ export default function ServiceWorkerRegistration() {
 
       // Subscribe to push notifications if permission granted
       if ('PushManager' in window && Notification.permission === 'granted') {
-        const isBrave = (navigator as any).brave !== undefined
         if (isBrave) {
           console.warn('Brave browser detected. Push notifications may require "Use Google services for push messaging" to be enabled in brave://settings/privacy')
         }
@@ -51,7 +51,7 @@ export default function ServiceWorkerRegistration() {
       }
 
       // Check if this is Brave browser
-      const isBrave = (navigator as any).brave !== undefined
+      const isBrave = isBraveBrowser()
       if (isBrave) {
         console.warn('Brave browser detected. Push notifications may be blocked by Brave Shields.')
         // Don't return here, still try to subscribe

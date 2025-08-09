@@ -37,7 +37,7 @@ self.addEventListener('push', function(event) {
       }
     ],
     vibrate: [200, 100, 200],
-    requireInteraction: true
+    requireInteraction: false
   };
 
   event.waitUntil(
